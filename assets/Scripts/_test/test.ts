@@ -1,0 +1,32 @@
+import { _decorator, Component, Node } from "cc";
+import { UnitManager } from "../Core/UnitManager";
+import { UnitType } from "../Units/enum/UnitEnum";
+import { UnitBase } from "../Units/UnitBase";
+const { ccclass, property } = _decorator;
+
+@ccclass("test")
+export class test extends Component {
+  start() {}
+
+  update(deltaTime: number) {}
+
+  unitCombineTest() {
+    // 创建两个相同类型和等级的兵种
+    const unit1 = new UnitBase(UnitType.SOLDIER, 1);
+    const unit2 = new UnitBase(UnitType.SOLDIER, 1);
+
+    // 创建单位管理器实例
+    const unitManager = new UnitManager();
+
+    // 尝试合成兵种
+    const newUnit = unitManager.combineUnits(unit1, unit2);
+
+    if (newUnit) {
+      console.log(
+        `合成成功！新兵种类型：${newUnit.type}，等级：${newUnit.level}`
+      );
+    } else {
+      console.log("合成失败，不满足合成条件。");
+    }
+  }
+}
