@@ -50,10 +50,13 @@
     "_components": [
       {
         "__id__": 216
+      },
+      {
+        "__id__": 218
       }
     ],
     "_prefab": {
-      "__id__": 218
+      "__id__": 220
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -358,7 +361,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "items",
+    "_name": "bottomButton",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -418,7 +421,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "homeBoxIcon01",
+    "_name": "onlineRewardButton",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1134,7 +1137,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "homeBoxIcon02",
+    "_name": "buyCharacterButton",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1850,7 +1853,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "homeBoxIcon03",
+    "_name": "buySlotButton",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -4309,7 +4312,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "我方战力",
+    "_string": "敌方战力",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 20,
@@ -5239,6 +5242,45 @@
     "fileId": "5eBs7vx+1Pd4F0YP4XzwEb"
   },
   {
+    "__type__": "48524bdQC5N2boc3JTnuvkA",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 219
+    },
+    "goldCount": {
+      "__id__": 126
+    },
+    "currentLevel": {
+      "__id__": 135
+    },
+    "levelUnlockTip": {
+      "__id__": 142
+    },
+    "startButton": {
+      "__id__": 2
+    },
+    "rewardButton": {
+      "__id__": 15
+    },
+    "buyCharacterButton": {
+      "__id__": 45
+    },
+    "buySlotButton": {
+      "__id__": 75
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "37FxN1xx9Ff6akmXzf4i01"
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -5247,7 +5289,6 @@
       "__id__": 0
     },
     "fileId": "81XyW9kolCA7Yo7jxuN4yg",
-    "instance": null,
-    "targetOverrides": null
+    "instance": null
   }
 ]
