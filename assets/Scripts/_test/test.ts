@@ -2,11 +2,20 @@ import { _decorator, Component, Node } from "cc";
 import { UnitManager } from "../Core/UnitManager";
 import { UnitType } from "../Units/enum/UnitEnum";
 import { UnitBase } from "../Units/UnitBase";
+import HttpClient from "../Net/HttpClient";
+import { UserData } from "../Net/NetApi";
 const { ccclass, property } = _decorator;
+
 
 @ccclass("test")
 export class test extends Component {
-  start() {}
+  async start() {
+
+    // const users = await HttpClient.getInstance().getUser(1);
+    // const users = await HttpClient.getInstance().updateUser('1',{name:'hzx',currentLevel:3});
+    // const users = await HttpClient.getInstance().deleteUser('0');
+    // console.log(users);
+  }
 
   update(deltaTime: number) {}
 

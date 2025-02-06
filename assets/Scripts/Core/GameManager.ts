@@ -1,11 +1,17 @@
-import { _decorator, Component, Node } from 'cc';
-const { ccclass, property } = _decorator;
 
-@ccclass('GameManager')
-export class GameManager extends Component {
-    start() {
+export class GameManager {
+    private static _instance: GameManager;
+
+    private constructor() {
         // 初始化关卡管理器和兵种管理器
         this.initManagers();
+    }
+
+    public static getInstance(): GameManager {
+        if (!this._instance) {
+            this._instance = new GameManager();
+        }
+        return this._instance;
     }
 
     initManagers() {
