@@ -4,8 +4,8 @@
     "designResolution": {
       "fitHeight": true,
       "fitWidth": false,
-      "width": 375,
-      "height": 768
+      "width": 750,
+      "height": 1334
     }
   },
   "custom_joint_texture_layouts": []

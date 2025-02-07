@@ -1,6 +1,6 @@
 // HttpClient.ts
 
-import { BASE_URL } from "../global/StaticData";
+import { BASE_URL } from "../Global/StaticData";
 import { UserData } from "./NetApi";
 
 class HttpClient {

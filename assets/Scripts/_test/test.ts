@@ -4,6 +4,8 @@ import { UnitType } from "../Units/enum/UnitEnum";
 import { UnitBase } from "../Units/UnitBase";
 import HttpClient from "../Net/HttpClient";
 import { UserData } from "../Net/NetApi";
+import { UIManager } from "../UI/UIManager";
+import { UIType } from "../UI/Enum/UIEnum";
 const { ccclass, property } = _decorator;
 
 
@@ -15,6 +17,7 @@ export class test extends Component {
     // const users = await HttpClient.getInstance().updateUser('1',{name:'hzx',currentLevel:3});
     // const users = await HttpClient.getInstance().deleteUser('0');
     // console.log(users);
+    // UIManager.getInstance().showUI(UIType.GAME_UI);
   }
 
   update(deltaTime: number) {}

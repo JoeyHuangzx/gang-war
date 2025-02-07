@@ -1,72 +1,65 @@
-import { _decorator, Component, Prefab, instantiate, Node } from 'cc';
-import { UIType } from './enum/UIEnum';
+import { _decorator, instantiate, Node, resources, Prefab, Component } from "cc";
+import { UIConfig } from "./Config/UIConfig";
+import { UIType } from "./Enum/UIEnum";
+import { BaseUI } from "./Views/BaseUI";
+
 const { ccclass, property } = _decorator;
 
-@ccclass('UIManager')
+@ccclass("UIManager")
 export class UIManager extends Component {
-    // 存储各个 UI 预制体
-    @property({ type: Prefab })
-    startMenuPrefab: Prefab | null = null;
+  @property(Node) private uiRoot: Node = null; // UI根节点
+  private static instance: UIManager;
+  private uiInstances: Map<UIType, BaseUI> = new Map(); // 存储已加载的UI
 
-    @property({ type: Prefab })
-    gameUIPrefab: Prefab | null = null;
+  onLoad() {
+    UIManager.instance = this;
+  }
 
-    @property({ type: Prefab })
-    endMenuPrefab: Prefab | null = null;
+  public static getInstance(): UIManager {
+    return UIManager.instance;
+  }
 
-    @property({ type: Prefab })
-    victoryMenuPrefab: Prefab | null = null;
+  /** 显示 UI */
+  public async showUI<T>(uiType: UIType, data?: T): Promise<BaseUI> {
+    let ui = this.uiInstances.get(uiType);
 
-    @property({ type: Prefab })
-    leaderboardPrefab: Prefab | null = null;
+    if (!ui) {
+      const prefabPath = UIConfig[uiType];
+      const prefab = await this.loadPrefab(prefabPath);
+      const uiNode = instantiate(prefab);
+      uiNode.parent = this.uiRoot;
 
-    @property({ type: Prefab })
-    toolUIPrefab: Prefab | null = null;
-
-    @property({ type: Prefab })
-    unitUIPrefab: Prefab | null = null;
-
-    // 存储各个 UI 节点的映射
-    private uiNodes: { [key in UIType]?: Node } = {};
-    // 存储 UI 预制体的映射
-    private uiPrefabs: { [key in UIType]?: Prefab } = {
-        [UIType.START_MENU]: this.startMenuPrefab,
-        [UIType.GAME_UI]: this.gameUIPrefab,
-        [UIType.END_MENU]: this.endMenuPrefab,
-        [UIType.VICTORY_MENU]: this.victoryMenuPrefab,
-        [UIType.LEADERBOARD]: this.leaderboardPrefab,
-        [UIType.TOOL_UI]: this.toolUIPrefab,
-        [UIType.UNIT_UI]: this.unitUIPrefab
-    };
-
-    start() {
-        // 初始显示开始界面
-        this.showUI(UIType.START_MENU);
+      ui = uiNode.getComponent(BaseUI) as BaseUI<T>;
+      this.uiInstances.set(uiType, ui);
     }
 
-    // 显示指定类型的 UI
-    showUI(uiType: UIType) {
-        this.hideAllUI();
-        let uiNode = this.uiNodes[uiType];
-        if (!uiNode) {
-            const prefab = this.uiPrefabs[uiType];
-            if (prefab) {
-                uiNode = instantiate(prefab);
-                this.node.addChild(uiNode);
-                this.uiNodes[uiType] = uiNode;
-            }
-        } else {
-            uiNode.active = true;
-        }
-    }
+    ui.init(data as T); // 初始化UI
+    ui.show();
+    return ui;
+  }
 
-    // 隐藏所有 UI 界面
-    hideAllUI() {
-        for (const key in this.uiNodes) {
-            const uiNode = this.uiNodes[key as UIType];
-            if (uiNode) {
-                uiNode.active = false;
-            }
-        }
+  /** 隐藏 UI */
+  public hideUI(uiType: UIType): void {
+    const ui = this.uiInstances.get(uiType);
+    if (ui) ui.hide();
+  }
+
+  /** 销毁 UI */
+  public destroyUI(uiType: UIType): void {
+    const ui = this.uiInstances.get(uiType);
+    if (ui) {
+      ui.dispose();
+      this.uiInstances.delete(uiType);
     }
+  }
+
+  /** 加载Prefab */
+  private loadPrefab(path: string): Promise<Prefab> {
+    return new Promise((resolve, reject) => {
+      resources.load(path, Prefab, (err, prefab) => {
+        if (err) reject(err);
+        else resolve(prefab);
+      });
+    });
+  }
 }

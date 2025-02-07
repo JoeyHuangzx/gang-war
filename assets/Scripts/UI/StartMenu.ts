@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, Button } from 'cc';
-import { UIType } from './enum/UIEnum';
+import { UIType } from './Enum/UIEnum';
 import { UIManager } from './UIManager';
 const { ccclass, property } = _decorator;
 

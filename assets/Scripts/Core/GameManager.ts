@@ -1,10 +1,11 @@
+import { UIType } from "../UI/Enum/UIEnum";
+import { UIManager } from "../UI/UIManager";
+import { GameUIData } from "../UI/Views/GameUI";
 
 export class GameManager {
     private static _instance: GameManager;
 
     private constructor() {
-        // 初始化关卡管理器和兵种管理器
-        this.initManagers();
     }
 
     public static getInstance(): GameManager {
@@ -17,6 +18,7 @@ export class GameManager {
     initManagers() {
         // 初始化关卡管理器
         // 初始化兵种管理器
+        UIManager.getInstance().showUI<GameUIData>(UIType.GameUI, { gold:100,level:1});
     }
 
     startGame() {
