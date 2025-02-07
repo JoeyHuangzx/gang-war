@@ -3,5 +3,11 @@
   "uuid": "82889309-5b34-4fc4-b78a-8b47488ce2f5",
   "creator": {
     "version": "3.8.4"
+  },
+  "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.25.9"
   }
 }

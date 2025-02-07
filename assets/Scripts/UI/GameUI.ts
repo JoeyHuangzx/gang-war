@@ -1,13 +1,4 @@
-import {
-  _decorator,
-  CCClass,
-  CCInteger,
-  Component,
-  Enum,
-  Label,
-  Node,
-  RichText,
-} from "cc";
+import { _decorator, CCClass, CCInteger, Component, Enum, Label, Node, RichText } from "cc";
 const { ccclass, property } = _decorator;
 
 enum BottomButtonType {
@@ -51,28 +42,13 @@ export class GameUI extends Component {
   @property(Node)
   buySlotButton: Node = null;
 
+
   start() {
     //侦听按钮事件
-    this.startButton.on(
-      Node.EventType.TOUCH_END,
-      this.onStartButtonClick,
-      this
-    );
-    this.rewardButton.on(
-      Node.EventType.TOUCH_END,
-      this.onRewardButtonClick,
-      this
-    );
-    this.buyCharacterButton.on(
-      Node.EventType.TOUCH_END,
-      this.onBuyCharacterButtonClick,
-      this
-    );
-    this.buySlotButton.on(
-      Node.EventType.TOUCH_END,
-      this.onBuySlotButtonClick,
-      this
-    );
+    this.startButton.on(Node.EventType.TOUCH_END, this.onStartButtonClick, this);
+    this.rewardButton.on(Node.EventType.TOUCH_END, this.onRewardButtonClick, this);
+    this.buyCharacterButton.on(Node.EventType.TOUCH_END, this.onBuyCharacterButtonClick, this);
+    this.buySlotButton.on(Node.EventType.TOUCH_END, this.onBuySlotButtonClick, this);
   }
 
   // 开始按钮点击事件
