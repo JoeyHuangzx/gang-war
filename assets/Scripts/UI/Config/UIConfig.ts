@@ -1,7 +1,7 @@
 import { UIType } from "../Enum/UIEnum";
 
 export const UIConfig: Record<UIType, string> = {
-  [UIType.GameUI]: "prefabs/interface/homeUI",
+  [UIType.GameUI]: "prefabs/interface/gameUI",
   [UIType.FightUI]: "prefabs/interface/fightUI",
   [UIType.SettleUI]: "prefabs/interface/settleUI",
   [UIType.RankUI]: "prefabs/interface/RankUI",

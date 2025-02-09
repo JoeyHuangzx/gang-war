@@ -12,7 +12,8 @@ const { ccclass, property } = _decorator;
 @ccclass("test")
 export class test extends Component {
   async start() {
-
+ /*    const allUsers = await HttpClient.getInstance().getUsers();
+    console.log(allUsers); */
     // const users = await HttpClient.getInstance().getUser(1);
     // const users = await HttpClient.getInstance().updateUser('1',{name:'hzx',currentLevel:3});
     // const users = await HttpClient.getInstance().deleteUser('0');

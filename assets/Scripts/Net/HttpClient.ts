@@ -1,6 +1,6 @@
 // HttpClient.ts
 
-import { BASE_URL } from "../Global/StaticData";
+import { Constants } from "../Global/Constants";
 import { UserData } from "./NetApi";
 
 class HttpClient {
@@ -17,7 +17,7 @@ class HttpClient {
 
   async createUser(userData: UserData): Promise<any> {
     try {
-      const response = await fetch(BASE_URL + "/users", {
+      const response = await fetch(Constants.BASE_URL + "/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +40,7 @@ class HttpClient {
   // 获取所有用户
   public async getUsers(): Promise<any> {
     try {
-      const response = await fetch(BASE_URL + "/users", {
+      const response = await fetch(Constants.BASE_URL + "/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,7 @@ class HttpClient {
   // 获取单个用户
   public async getUser(id: number): Promise<any> {
     try {
-      const response = await fetch(BASE_URL + `/users/${id.toString()}`, {
+      const response = await fetch(Constants.BASE_URL + `/users/${id.toString()}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -84,9 +84,9 @@ class HttpClient {
   }
 
   // 更新用户数据
-  async updateUser(id: string, updateData:Partial<UserData>): Promise<any> {
+  async updateUser(id: number, updateData:Partial<UserData>): Promise<any> {
     try {
-      const response = await fetch(BASE_URL + `/users/${id.toString()}`, {
+      const response = await fetch(Constants.BASE_URL + `/users/${id.toString()}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -109,7 +109,7 @@ class HttpClient {
   // 删除用户
   async deleteUser(id: string): Promise<boolean> {
     try {
-      const response = await fetch(BASE_URL + `/users/${id}`, {
+      const response = await fetch(Constants.BASE_URL + `/users/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

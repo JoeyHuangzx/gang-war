@@ -7,6 +7,27 @@
     "__original-animation-0.cconb"
   ],
   "subMetas": {
+    "1e5ef": {
+      "importer": "gltf-embeded-image",
+      "uuid": "502b4d03-a036-48c7-bb74-667654db2940@1e5ef",
+      "displayName": "",
+      "id": "1e5ef",
+      "name": "贴图 #10.image",
+      "userData": {
+        "gltfIndex": 0,
+        "fixAlphaTransparencyArtifacts": true,
+        "hasAlpha": false,
+        "type": "texture"
+      },
+      "ver": "1.0.3",
+      "imported": true,
+      "files": [
+        ".jpg",
+        ".json",
+        ".png"
+      ],
+      "subMetas": {}
+    },
     "444de": {
       "importer": "gltf-mesh",
       "uuid": "502b4d03-a036-48c7-bb74-667654db2940@444de",
@@ -169,23 +190,23 @@
       ],
       "subMetas": {}
     },
-    "1e5ef": {
+    "13b72": {
       "importer": "gltf-embeded-image",
-      "uuid": "502b4d03-a036-48c7-bb74-667654db2940@1e5ef",
+      "uuid": "502b4d03-a036-48c7-bb74-667654db2940@13b72",
       "displayName": "",
-      "id": "1e5ef",
-      "name": "贴图 #10.image",
+      "id": "13b72",
+      "name": "catapult02.jpg.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
-        "hasAlpha": true,
+        "hasAlpha": false,
         "type": "texture"
       },
       "ver": "1.0.3",
       "imported": true,
       "files": [
-        ".json",
-        ".png"
+        ".jpg",
+        ".json"
       ],
       "subMetas": {}
     },
@@ -203,7 +224,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "502b4d03-a036-48c7-bb74-667654db2940@1e5ef"
+        "imageUuidOrDatabaseUri": "502b4d03-a036-48c7-bb74-667654db2940@13b72"
       },
       "ver": "1.0.22",
       "imported": true,
@@ -248,8 +269,8 @@
   "userData": {
     "imageMetas": [
       {
-        "name": "贴图 #10",
-        "uri": "502b4d03-a036-48c7-bb74-667654db2940@1e5ef"
+        "name": "catapult02.jpg",
+        "uri": "502b4d03-a036-48c7-bb74-667654db2940@13b72"
       }
     ],
     "animationImportSettings": [

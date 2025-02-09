@@ -23,6 +23,27 @@
       ],
       "subMetas": {}
     },
+    "c4b7a": {
+      "importer": "gltf-embeded-image",
+      "uuid": "57d4c4ef-3199-4596-bf79-7c065964ca9c@c4b7a",
+      "displayName": "",
+      "id": "c4b7a",
+      "name": "贴图 #6.image",
+      "userData": {
+        "gltfIndex": 0,
+        "fixAlphaTransparencyArtifacts": true,
+        "hasAlpha": false,
+        "type": "texture"
+      },
+      "ver": "1.0.3",
+      "imported": true,
+      "files": [
+        ".jpg",
+        ".json",
+        ".png"
+      ],
+      "subMetas": {}
+    },
     "6868c": {
       "importer": "gltf-mesh",
       "uuid": "57d4c4ef-3199-4596-bf79-7c065964ca9c@6868c",
@@ -185,23 +206,23 @@
       ],
       "subMetas": {}
     },
-    "c4b7a": {
+    "fa1d4": {
       "importer": "gltf-embeded-image",
-      "uuid": "57d4c4ef-3199-4596-bf79-7c065964ca9c@c4b7a",
+      "uuid": "57d4c4ef-3199-4596-bf79-7c065964ca9c@fa1d4",
       "displayName": "",
-      "id": "c4b7a",
-      "name": "贴图 #6.image",
+      "id": "fa1d4",
+      "name": "soldier01.jpg.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
-        "hasAlpha": true,
+        "hasAlpha": false,
         "type": "texture"
       },
       "ver": "1.0.3",
       "imported": true,
       "files": [
-        ".json",
-        ".png"
+        ".jpg",
+        ".json"
       ],
       "subMetas": {}
     },
@@ -219,7 +240,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "57d4c4ef-3199-4596-bf79-7c065964ca9c@c4b7a"
+        "imageUuidOrDatabaseUri": "57d4c4ef-3199-4596-bf79-7c065964ca9c@fa1d4"
       },
       "ver": "1.0.22",
       "imported": true,
@@ -248,8 +269,8 @@
   "userData": {
     "imageMetas": [
       {
-        "name": "贴图 #6",
-        "uri": "57d4c4ef-3199-4596-bf79-7c065964ca9c@c4b7a"
+        "name": "soldier01.jpg",
+        "uri": "57d4c4ef-3199-4596-bf79-7c065964ca9c@fa1d4"
       }
     ],
     "animationImportSettings": [
