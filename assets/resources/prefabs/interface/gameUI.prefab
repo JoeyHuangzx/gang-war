@@ -5545,6 +5545,15 @@
     "enemyPower": {
       "__id__": 102
     },
+    "onlineReward": {
+      "__id__": 155
+    },
+    "buyCharacter": {
+      "__id__": 185
+    },
+    "buySlot": {
+      "__id__": 215
+    },
     "levelUnlockTip": {
       "__id__": 52
     },

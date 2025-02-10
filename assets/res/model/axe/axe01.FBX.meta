@@ -25,12 +25,12 @@
       ],
       "subMetas": {}
     },
-    "1cdc4": {
+    "cad83": {
       "importer": "gltf-embeded-image",
-      "uuid": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@1cdc4",
+      "uuid": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@cad83",
       "displayName": "",
-      "id": "1cdc4",
-      "name": "贴图 #3.image",
+      "id": "cad83",
+      "name": "axe01.jpg.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
@@ -41,8 +41,7 @@
       "imported": true,
       "files": [
         ".jpg",
-        ".json",
-        ".png"
+        ".json"
       ],
       "subMetas": {}
     },
@@ -190,23 +189,23 @@
       ],
       "subMetas": {}
     },
-    "cad83": {
+    "1cdc4": {
       "importer": "gltf-embeded-image",
-      "uuid": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@cad83",
+      "uuid": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@1cdc4",
       "displayName": "",
-      "id": "cad83",
-      "name": "axe01.jpg.image",
+      "id": "1cdc4",
+      "name": "贴图 #3.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
-        "hasAlpha": false,
+        "hasAlpha": true,
         "type": "texture"
       },
       "ver": "1.0.3",
       "imported": true,
       "files": [
-        ".jpg",
-        ".json"
+        ".json",
+        ".png"
       ],
       "subMetas": {}
     },
@@ -224,7 +223,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@cad83"
+        "imageUuidOrDatabaseUri": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@1cdc4"
       },
       "ver": "1.0.22",
       "imported": true,
@@ -269,8 +268,8 @@
   "userData": {
     "imageMetas": [
       {
-        "name": "axe01.jpg",
-        "uri": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@cad83"
+        "name": "贴图 #3",
+        "uri": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@1cdc4"
       }
     ],
     "animationImportSettings": [

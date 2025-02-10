@@ -1,4 +1,20 @@
 
+// 定义统一响应结构的泛型接口
+export interface ApiResponse<T> {
+  data: T;
+  serverTime: number;
+  statusCode: number;
+  message: string;
+}
+
+export interface LoginDataResponse extends ApiResponse<UserData> {
+
+}
+
+export interface CreateUserResponse extends ApiResponse<UserData> {
+  
+}
+
 export interface UserData {
   /** 玩家ID */
     id: number;
@@ -7,7 +23,7 @@ export interface UserData {
     /** 金币数量 */
     gold: number;
     /** 当前关卡 */
-    level: number;
+    currentLevel: number;
     /** 创建时间 */
     createDate: Date;
     /** 购买次数 */

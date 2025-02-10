@@ -5,12 +5,12 @@
   "uuid": "c5eb5066-3ba4-4f69-9c8d-058e0112d0d2",
   "files": [],
   "subMetas": {
-    "425ef": {
+    "af455": {
       "importer": "gltf-embeded-image",
-      "uuid": "c5eb5066-3ba4-4f69-9c8d-058e0112d0d2@425ef",
+      "uuid": "c5eb5066-3ba4-4f69-9c8d-058e0112d0d2@af455",
       "displayName": "",
-      "id": "425ef",
-      "name": "贴图 #2.image",
+      "id": "af455",
+      "name": "meteorite01.jpg.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
@@ -21,8 +21,7 @@
       "imported": true,
       "files": [
         ".jpg",
-        ".json",
-        ".png"
+        ".json"
       ],
       "subMetas": {}
     },
@@ -44,23 +43,23 @@
       ],
       "subMetas": {}
     },
-    "af455": {
+    "425ef": {
       "importer": "gltf-embeded-image",
-      "uuid": "c5eb5066-3ba4-4f69-9c8d-058e0112d0d2@af455",
+      "uuid": "c5eb5066-3ba4-4f69-9c8d-058e0112d0d2@425ef",
       "displayName": "",
-      "id": "af455",
-      "name": "meteorite01.jpg.image",
+      "id": "425ef",
+      "name": "贴图 #2.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
-        "hasAlpha": false,
+        "hasAlpha": true,
         "type": "texture"
       },
       "ver": "1.0.3",
       "imported": true,
       "files": [
-        ".jpg",
-        ".json"
+        ".json",
+        ".png"
       ],
       "subMetas": {}
     },
@@ -78,7 +77,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "c5eb5066-3ba4-4f69-9c8d-058e0112d0d2@af455"
+        "imageUuidOrDatabaseUri": "c5eb5066-3ba4-4f69-9c8d-058e0112d0d2@425ef"
       },
       "ver": "1.0.22",
       "imported": true,
@@ -123,8 +122,8 @@
   "userData": {
     "imageMetas": [
       {
-        "name": "meteorite01.jpg",
-        "uri": "c5eb5066-3ba4-4f69-9c8d-058e0112d0d2@af455"
+        "name": "贴图 #2",
+        "uri": "c5eb5066-3ba4-4f69-9c8d-058e0112d0d2@425ef"
       }
     ],
     "assetFinder": {

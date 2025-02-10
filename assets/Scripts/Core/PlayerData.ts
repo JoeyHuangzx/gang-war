@@ -15,32 +15,12 @@ export class PlayerData {
 
   userData: UserData;
 
- /*  id: number;
-  name: string;
-  gold: number; // 金币数量
-  level: number; // 当前关卡
-  createDate: Date; // 创建时间
-  buyTimes: number; // 购买次数
-  buyCellTimes: number; // 购买格子的次数
-  unlockSoldier: number[]; // 已解锁士兵列表
-  onlineReward: number; // 在线奖励数值
-  finishGuides: string[]; // 完成的引导步骤
-  hasUsedFireBall: boolean; // 是否使用过火球技能 */
-
   constructor() {
-    this.userData={
-      id: 0,
-      name: '',
-      gold: 0,
-      level: 0,
-      createDate: new Date(),
-      buyTimes: 0,
-      buyCellTimes: 0,
-      unlockSoldier: [],
-      onlineReward: 0,
-      finishGuides: [],
-      hasUsedFireBall: false,
-    }
+  }
+
+  initData(userData: UserData) {
+    this.userData = userData;
+    localStorage.setItem('userData', JSON.stringify(userData));
   }
 
   // 更新金币
@@ -50,7 +30,7 @@ export class PlayerData {
 
   // 增加关卡
   public increaseLevel(): void {
-    this.userData.level += 1;
+    this.userData.currentLevel += 1;
   }
 
   // 购买一个角色
@@ -143,6 +123,8 @@ export class PlayerData {
     try {
       const playerInfo = this.getPlayerInfo();
       const response = await HttpClient.getInstance().updateUser(playerInfo.id, playerInfo);
+      // 同时保存一份到本地
+      
       console.log('保存玩家信息成功', response);
     } catch (error) {
       console.error('保存玩家信息失败', error);

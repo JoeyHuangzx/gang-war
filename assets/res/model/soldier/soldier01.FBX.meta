@@ -23,12 +23,12 @@
       ],
       "subMetas": {}
     },
-    "c4b7a": {
+    "fa1d4": {
       "importer": "gltf-embeded-image",
-      "uuid": "57d4c4ef-3199-4596-bf79-7c065964ca9c@c4b7a",
+      "uuid": "57d4c4ef-3199-4596-bf79-7c065964ca9c@fa1d4",
       "displayName": "",
-      "id": "c4b7a",
-      "name": "贴图 #6.image",
+      "id": "fa1d4",
+      "name": "soldier01.jpg.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
@@ -39,8 +39,7 @@
       "imported": true,
       "files": [
         ".jpg",
-        ".json",
-        ".png"
+        ".json"
       ],
       "subMetas": {}
     },
@@ -206,23 +205,23 @@
       ],
       "subMetas": {}
     },
-    "fa1d4": {
+    "c4b7a": {
       "importer": "gltf-embeded-image",
-      "uuid": "57d4c4ef-3199-4596-bf79-7c065964ca9c@fa1d4",
+      "uuid": "57d4c4ef-3199-4596-bf79-7c065964ca9c@c4b7a",
       "displayName": "",
-      "id": "fa1d4",
-      "name": "soldier01.jpg.image",
+      "id": "c4b7a",
+      "name": "贴图 #6.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
-        "hasAlpha": false,
+        "hasAlpha": true,
         "type": "texture"
       },
       "ver": "1.0.3",
       "imported": true,
       "files": [
-        ".jpg",
-        ".json"
+        ".json",
+        ".png"
       ],
       "subMetas": {}
     },
@@ -240,7 +239,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "57d4c4ef-3199-4596-bf79-7c065964ca9c@fa1d4"
+        "imageUuidOrDatabaseUri": "57d4c4ef-3199-4596-bf79-7c065964ca9c@c4b7a"
       },
       "ver": "1.0.22",
       "imported": true,
@@ -269,8 +268,8 @@
   "userData": {
     "imageMetas": [
       {
-        "name": "soldier01.jpg",
-        "uri": "57d4c4ef-3199-4596-bf79-7c065964ca9c@fa1d4"
+        "name": "贴图 #6",
+        "uri": "57d4c4ef-3199-4596-bf79-7c065964ca9c@c4b7a"
       }
     ],
     "animationImportSettings": [

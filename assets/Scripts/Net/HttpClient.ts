@@ -1,7 +1,8 @@
 // HttpClient.ts
 
-import { Constants } from "../Global/Constants";
-import { UserData } from "./NetApi";
+import { LogManager } from '../Core/LogManager';
+import { Constants } from '../Global/Constants';
+import { CreateUserResponse, LoginDataResponse, UserData } from './NetApi';
 
 class HttpClient {
   private static instance: HttpClient;
@@ -15,116 +16,63 @@ class HttpClient {
     return HttpClient.instance;
   }
 
-  async createUser(userData: UserData): Promise<any> {
+  // 统一封装的 fetch 请求方法
+  private async request<T>(url: string, options: RequestInit): Promise<T | null> {
     try {
-      const response = await fetch(Constants.BASE_URL + "/users", {
-        method: "POST",
+      const response = await fetch(Constants.BASE_URL + url, {
+        ...options,
         headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      return data; // 返回创建的用户数据
-    } catch (error) {
-      console.error("Fetch error:", error);
-      return null;
-    }
-  }
-
-  // 获取所有用户
-  public async getUsers(): Promise<any> {
-    try {
-      const response = await fetch(Constants.BASE_URL + "/users", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
+          ...options.headers,
         },
       });
-
       if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      return data; // 返回 JSON 数据
-    } catch (error) {
-      console.error("Fetch error:", error);
-      return null;
-    }
-  }
-
-  // 获取单个用户
-  public async getUser(id: number): Promise<any> {
-    try {
-      const response = await fetch(Constants.BASE_URL + `/users/${id.toString()}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text(); // 获取详细的错误信息
-        console.error(`Error: ${response.status}, ${errorText}`);
+        const errorText = await response.text();
+        LogManager.error(`Error: ${response.status}, ${errorText}`);
         throw new Error(`Network response was not ok: ${response.status}`);
       }
-
-      const data = await response.json();
-      return data; // 返回 JSON 数据
-    } catch (error) {
-      console.error("Fetch error:", error);
-      return null;
-    }
-  }
-
-  // 更新用户数据
-  async updateUser(id: number, updateData:Partial<UserData>): Promise<any> {
-    try {
-      const response = await fetch(Constants.BASE_URL + `/users/${id.toString()}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updateData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      const rspData = await response.json();
+      if (rspData.statusCode !== 200) {
+        throw new Error(`${rspData.message}`);
       }
-
-      const data = await response.json();
-      return data; // 返回更新后的用户数据
+      return rspData as T;
     } catch (error) {
-      console.error("Fetch error:", error);
-      return null;
+      LogManager.error('Fetch error:', error);
+      throw error;
     }
   }
-
+  // 创建用户
+  async createUser(userName: string): Promise<CreateUserResponse | null> {
+    return this.request<CreateUserResponse>('/users', {
+      method: 'POST',
+      body: JSON.stringify({ name: userName }),
+    });
+  }
+  // 获取所有用户
+  public async getUsers(): Promise<any | null> {
+    return this.request<any>('/users', {
+      method: 'GET',
+    });
+  }
+  // 获取单个用户
+  public async getUser(userName: string): Promise<LoginDataResponse | null> {
+    return this.request<LoginDataResponse>(`/login?name=${userName}`, {
+      method: 'GET',
+    });
+  }
+  // 更新用户数据
+  async updateUser(id: number, updateData: Partial<UserData>): Promise<any | null> {
+    return this.request<any>(`/users/${id.toString()}`, {
+      method: 'PUT',
+      body: JSON.stringify(updateData),
+    });
+  }
   // 删除用户
   async deleteUser(id: string): Promise<boolean> {
-    try {
-      const response = await fetch(Constants.BASE_URL + `/users/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      return true; // 返回成功标志
-    } catch (error) {
-      console.error("Fetch error:", error);
-      return false; // 失败标志
-    }
+    const result = await this.request<null>(`/users/${id}`, {
+      method: 'DELETE',
+    });
+    return result !== null;
   }
 }
 

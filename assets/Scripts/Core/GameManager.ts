@@ -18,7 +18,7 @@ export class GameManager {
     initManagers() {
         // 初始化关卡管理器
         // 初始化兵种管理器
-        UIManager.getInstance().showUI<GameUIData>(UIType.GameUI, { gold:100,level:1});
+        UIManager.getInstance().showUI(UIType.LoginUI);
     }
 
     startGame() {

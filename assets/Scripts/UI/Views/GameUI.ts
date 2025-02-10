@@ -2,6 +2,7 @@ import { _decorator, CCClass, CCInteger, Component, Enum, Label, Node, RichText,
 import { BaseUI } from './BaseUI';
 import { UIManager } from '../UIManager';
 import { UIType } from '../Enum/UIEnum';
+import { PlayerData } from '../../Core/PlayerData';
 const { ccclass, property } = _decorator;
 
 /** GameUI 的数据结构 */
@@ -25,6 +26,15 @@ export class GameUI extends BaseUI<GameUIData> {
 
   @property(Label)
   enemyPower: Label = null;
+
+  @property(Label)
+  onlineReward:Label = null;
+
+  @property(Label)
+  buyCharacter:Label = null;
+
+  @property(Label)
+  buySlot:Label = null;
 
   // 关卡解锁tip
   @property(RichText)
@@ -52,6 +62,8 @@ export class GameUI extends BaseUI<GameUIData> {
   private duration: number = 0.5;  // 单次摆动时间
   private swingTween = null;       // 缓存 Tween 以便控制
 
+  playerData:PlayerData;
+
 
   addListener() {
     //侦听按钮事件
@@ -63,13 +75,17 @@ export class GameUI extends BaseUI<GameUIData> {
 
   /** 初始化UI，可以传入数据 */
   public init(data?: GameUIData): void {
+    this.playerData = PlayerData.getInstance();
     console.log("StartUI 初始化", data);
     this.addListener();
-    this.goldCount.string = data.gold.toString();
+    this.goldCount.string = this.playerData.getPlayerInfo().gold.toString();
     this.levelUnlockTip.string = '<color=#ffffff>第5关解锁</color><color=#0fff00>xxx</color>';
-    this.currentLevel.string = `第${data.level}关`;
+    this.currentLevel.string = `第${this.playerData.getPlayerInfo().currentLevel}关`;
     this.ourPower.string = '100';
     this.enemyPower.string = '100';
+    this.onlineReward.string = this.playerData.getOnlineReward().toString();
+    this.buyCharacter.string = this.playerData.getBuyFighterPrice().toString();
+    this.buySlot.string = this.playerData.getBuyCellPrice().toString();
     this.startSwing();
   }
 

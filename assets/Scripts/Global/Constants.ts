@@ -13,4 +13,14 @@ export class Constants{
         TIME_PER_CIRCLE: 10         //转一圈所需时间
     }
     
+    public static STORAGE_KEY = {
+        USER_DATA: 'userData',
+        GAME_DATA: 'gameData',
+        GAME_SETTING: 'gameSetting',
+        GAME_SETTING_KEY: {
+            SOUND: 'sound',
+            MUSIC: 'music'
+        } 
+    } as const;
+
 }
