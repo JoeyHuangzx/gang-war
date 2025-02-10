@@ -54,6 +54,7 @@ export class LoginUI extends BaseUI {
 
   enterGame(userData: UserData) {
     PlayerData.getInstance().initData(userData);
+    
     director.loadScene('main', () => {
       LogManager.info('加载 main 场景完成');
       UIManager.getInstance().showUI<GameUIData>(UIType.GameUI, { gold: 100, level: 1 });

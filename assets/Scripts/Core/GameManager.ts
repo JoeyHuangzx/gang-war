@@ -1,6 +1,7 @@
-import { UIType } from "../UI/Enum/UIEnum";
-import { UIManager } from "../UI/UIManager";
-import { GameUIData } from "../UI/Views/GameUI";
+import { FighterData, LevelData } from "../Datas/CsvConfig";
+import { CSVManager } from "./CSVManager";
+import { DataManager } from "./DataManager";
+
 
 export class GameManager {
     private static _instance: GameManager;
@@ -16,9 +17,9 @@ export class GameManager {
     }
 
     initManagers() {
+        DataManager.getInstance().init();
         // 初始化关卡管理器
         // 初始化兵种管理器
-        UIManager.getInstance().showUI(UIType.LoginUI);
     }
 
     startGame() {

@@ -3,6 +3,7 @@ import { BaseUI } from './BaseUI';
 import { UIManager } from '../UIManager';
 import { UIType } from '../Enum/UIEnum';
 import { PlayerData } from '../../Core/PlayerData';
+import { DataManager } from '../../Core/DataManager';
 const { ccclass, property } = _decorator;
 
 /** GameUI 的数据结构 */
@@ -79,7 +80,7 @@ export class GameUI extends BaseUI<GameUIData> {
     console.log("StartUI 初始化", data);
     this.addListener();
     this.goldCount.string = this.playerData.getPlayerInfo().gold.toString();
-    this.levelUnlockTip.string = '<color=#ffffff>第5关解锁</color><color=#0fff00>xxx</color>';
+    this.levelUnlockTip.string = `<color=#ffffff>第${DataManager.getInstance().nextUnlockLevel()}关解锁</color><color=#0fff00>${DataManager.getInstance().nextUnlockCharacter()}</color>`;
     this.currentLevel.string = `第${this.playerData.getPlayerInfo().currentLevel}关`;
     this.ourPower.string = '100';
     this.enemyPower.string = '100';
