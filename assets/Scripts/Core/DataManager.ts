@@ -33,6 +33,7 @@ export class DataManager {
       });
   }
 
+  
   private loadLevelData() {
     CSVManager.getInstance()
       .loadCSV<LevelData>('level')

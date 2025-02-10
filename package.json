@@ -1,5 +1,5 @@
 {
-  "name": "gang-war",
+  "name": "疯狂打群架",
   "uuid": "82889309-5b34-4fc4-b78a-8b47488ce2f5",
   "creator": {
     "version": "3.8.4"
@@ -9,5 +9,6 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.25.9"
-  }
+  },
+  "description": ""
 }

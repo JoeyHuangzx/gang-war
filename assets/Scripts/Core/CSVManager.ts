@@ -28,7 +28,7 @@ export class CSVManager {
       .map(line => line.trim())
       .filter(line => line.length > 0);
     if (lines.length < 4) return []; // 至少需要 4 行（字段说明、字段名、字段类型、数据）
-
+    //TODO: 增加字段类型判断
     const headers = lines[2].split(','); // 第三行是字段名
     const dataLines = lines.slice(3); // 从第四行开始是数据
 
