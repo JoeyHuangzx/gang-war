@@ -17,7 +17,7 @@ class LogManager {
   // 输出 DEBUG 级别的日志
   public static debug(message: string, ...optionalParams: any[]) {
     if (this.currentLevel <= LogLevel.DEBUG) {
-      console.log('%c[DEBUG] %s', 'color: #808080;', message, ...optionalParams);
+      console.log('%c[DEBUG] %s', 'color:rgb(182, 178, 178);', message, ...optionalParams);
     }
   }
   // 输出 INFO 级别的日志
