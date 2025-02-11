@@ -35,27 +35,37 @@ export class GridManager extends Component {
     if (index >= 9) {
       width = 4;
       height = 5;
-      this.basePosition=new Vec3(-14.5,0,0);
+      this.basePosition = new Vec3(-14.5, 0, 0);
     }
     if (index >= 20) {
       width = 5;
       height = Math.ceil(index / width);
-      this.basePosition=new Vec3(-20,0,0);
+      this.basePosition = new Vec3(-20, 0, 0);
     }
 
-    layer=Math.floor(index/width);
+    layer = Math.floor(index / width);
     let x = this.basePosition.x - layer * this.gridSize;
     let z = 0;
-    const middleGap=Math.floor(width/2);   
-    const middle=layer*height+1;
-    const gap=(index+1)-middle;  
-    LogManager.debug(`layer:${layer},middleGap:${middleGap},middle:${middle},gap:${gap}`)
-    if(gap===0){
-        z=this.basePosition.z;
-    }else if(gap===middleGap){
-        z=this.basePosition.z-middleGap*this.gridSize;
-    }else if(gap===middleGap+1){
-        z=this.basePosition.z+middleGap*this.gridSize;
+    const middleGap = Math.floor(width / 2);
+    const middle = layer * height + 1;
+    const gap = index + 1 - middle;
+    LogManager.debug(`layer:${layer},middleGap:${middleGap},middle:${middle},gap:${gap}`);
+    if (gap === 0) {
+      z = this.basePosition.z;
+    } else {
+      if (index < 10) {
+        if (gap === middleGap) {
+          z = this.basePosition.z - middleGap * this.gridSize;
+        } else if (gap === middleGap + 1) {
+          z = this.basePosition.z + middleGap * this.gridSize;
+        }
+      } else {
+        if (gap % 2 === 1) {
+          z = this.basePosition.z - gap * this.gridSize;
+        } else {
+          z = this.basePosition.z + gap * this.gridSize;
+        }
+      }
     }
     // this.basePosition.z + (countInLayer - Math.floor(width / 2)) * this.gridSize;
     LogManager.debug(`格子位置:index:${index},x: (${x}, z:${z})`);
