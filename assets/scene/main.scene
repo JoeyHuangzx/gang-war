@@ -680,7 +680,7 @@
     "asset": null,
     "fileId": "6eb74d0e-1741-4819-94a9-c30b8be4e440",
     "instance": null,
-    "targetOverrides": [],
+    "targetOverrides": null,
     "nestedPrefabInstanceRoots": [
       {
         "__id__": 9

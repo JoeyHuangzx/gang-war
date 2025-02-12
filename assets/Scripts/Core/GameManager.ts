@@ -24,11 +24,10 @@ export class GameManager {
 
     initManagers() {
         this.gameNode=find('game');
-        this.gridManager=find('newMap01')?.getComponent(GridManager);
+        
         // 初始化关卡管理器
         // 初始化兵种管理器
-        this.gridManager.initGrid();
-        // GridManager.getInstance().initGrid();
+        this.gridManager=find('newMap01')?.getComponent(GridManager);
         SoldierManager.getInstance().initData();
     }
 

@@ -38,4 +38,13 @@ export interface UserData {
     finishGuides: string[];
     /** 是否使用过火球 */
     hasUsedFireBall: boolean;
+    /** 玩家阵容 */
+    formation: Formation[];
+  }
+
+  export interface Formation{
+    /** 阵容ID */
+    id: number;
+    /** 士兵ID,如果为空，就是只买了格子，没买士兵 */
+    soldierId?: number;
   }

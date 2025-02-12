@@ -25,27 +25,6 @@
       ],
       "subMetas": {}
     },
-    "cad83": {
-      "importer": "gltf-embeded-image",
-      "uuid": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@cad83",
-      "displayName": "",
-      "id": "cad83",
-      "name": "axe01.jpg.image",
-      "userData": {
-        "gltfIndex": 0,
-        "fixAlphaTransparencyArtifacts": true,
-        "hasAlpha": true,
-        "type": "texture"
-      },
-      "ver": "1.0.3",
-      "imported": true,
-      "files": [
-        ".jpg",
-        ".json",
-        ".png"
-      ],
-      "subMetas": {}
-    },
     "1f586": {
       "importer": "gltf-animation",
       "uuid": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@1f586",
@@ -190,23 +169,23 @@
       ],
       "subMetas": {}
     },
-    "1cdc4": {
+    "cad83": {
       "importer": "gltf-embeded-image",
-      "uuid": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@1cdc4",
+      "uuid": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@cad83",
       "displayName": "",
-      "id": "1cdc4",
-      "name": "贴图 #3.image",
+      "id": "cad83",
+      "name": "axe01.jpg.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
-        "hasAlpha": true,
+        "hasAlpha": false,
         "type": "texture"
       },
       "ver": "1.0.3",
       "imported": true,
       "files": [
-        ".json",
-        ".png"
+        ".jpg",
+        ".json"
       ],
       "subMetas": {}
     },
@@ -224,7 +203,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@1cdc4"
+        "imageUuidOrDatabaseUri": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@cad83"
       },
       "ver": "1.0.22",
       "imported": true,
@@ -269,8 +248,8 @@
   "userData": {
     "imageMetas": [
       {
-        "name": "贴图 #3",
-        "uri": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@1cdc4"
+        "name": "axe01.jpg",
+        "uri": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@cad83"
       }
     ],
     "animationImportSettings": [

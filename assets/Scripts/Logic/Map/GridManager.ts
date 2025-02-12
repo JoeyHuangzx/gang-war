@@ -2,6 +2,7 @@ import { _decorator, Component, Node, Vec3, Prefab, instantiate, UITransform, di
 import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
 import { LogManager } from '../../Core/LogManager';
+import { GameManager } from '../../Core/GameManager';
 
 const { ccclass, property } = _decorator;
 
@@ -10,16 +11,14 @@ export class GridManager extends Component {
 
   @property(Prefab)
   gridPrefab: Prefab = null!; // 格子预制体
-  private parent: Node = null!;
   private gridSize: number = 1.5; // 每个格子的大小
   private basePosition: Vec3 = new Vec3(-10, 0, 0); // 初始位置（最下方中间）
   private gridNodes: Node[] = []; // 存储所有格子节点
   public gridMap: Map<number, Node> = new Map();
 
-  initGrid() {
-    this.parent=find('game');
-    this.generateGrids(3); // 默认生成3个格子
+  start() {
     EventManager.on(EventName.ADD_GRID,this.addGrid,this);
+    // EventManager.on(EventName.GENERATE_GRID,this.generateGrids,this);
   }
 
   /** 计算当前格子的位置 */
@@ -78,14 +77,14 @@ export class GridManager extends Component {
 
   /** 生成格子 */
   generateGrids(count: number) {
-    if(!this.gridPrefab || !this.parent){
+    if(!this.gridPrefab || !GameManager.getInstance().gameNode){
       LogManager.error('gridPrefab or parent is null');
       return;
     }
     for (let i = 0; i < count; i++) {
       let gridNode = instantiate(this.gridPrefab);
       gridNode.setPosition(this.getGridPosition(this.gridNodes.length));
-      this.parent.addChild(gridNode);
+      GameManager.getInstance().gameNode.addChild(gridNode);
       this.gridNodes.push(gridNode);
       this.gridMap.set(this.gridNodes.length, gridNode);
     }

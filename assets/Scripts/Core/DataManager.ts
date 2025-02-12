@@ -1,4 +1,5 @@
 import { FighterData, LevelData } from '../Datas/CsvConfig';
+import { Formation } from '../Net/NetApi';
 import { CSVManager } from './CSVManager';
 import { LogManager } from './LogManager';
 import { PlayerData } from './PlayerData';
@@ -51,7 +52,7 @@ export class DataManager {
     // 根据levelMap里的unlock数据，找到下一个解锁的兵种
     for (let i = currentLevel; i <= this.levelMap.size; i++) {
       let levelData = this.levelMap.get(i);
-      LogManager.debug('levelData', i, levelData);
+      // LogManager.debug('levelData', i, levelData);
       if (levelData && levelData?.unlock) {
         unlock = Number(levelData?.ID);
         break;
@@ -68,5 +69,36 @@ export class DataManager {
       return null;
     }
     return nextUnlockCharacter.name;
+  }
+
+  public getFighterData(id: number): FighterData {
+    return this.fighterMap.get(id);
+  }
+
+  /** 根据当前阵容计算战力 */
+  public calculatePower() {
+    const currentFormation = PlayerData.getInstance().UserData.formation;
+    const power= currentFormation.reduce((acc, curr) => {
+      return acc+Number(this.getFighterData(curr.soldierId).fight);
+    },0)
+    return power;
+  }
+
+  /** 计算敌方战力 */
+  public calculateEnemyPower() {
+    const currentLevel = PlayerData.getInstance().UserData.currentLevel;
+    const levelData = this.levelMap.get(currentLevel);
+    
+    const enemyFormation =[]; 
+    const tempArr=levelData.formation.split('_');
+    for (let i = 0; i < tempArr.length; i++) {
+      const itemArr = tempArr[i].split('#');
+      const _formation:Formation={id:Number(itemArr[1]),soldierId:Number(itemArr[0])};
+      enemyFormation.push(_formation);
+    }
+    const power= enemyFormation.reduce((acc, curr) => {
+      return acc+Number(this.getFighterData(curr.soldierId).fight);
+    },0)
+    return power;
   }
 }

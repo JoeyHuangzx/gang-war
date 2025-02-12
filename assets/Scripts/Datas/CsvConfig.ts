@@ -6,6 +6,7 @@ export type csvFileName= 'fighter' | 'level';
 export interface FighterData {
   ID: number;          // 角色编号
   name: string;        // 角色名称
+  prefabName:string;   // 预制体名称
   type: number;        // 攻击类型（1 奥特曼 / 2 牛角 / 3 短剑 / 4 标枪 / 5 投石车 / 6 小丑）
   level: number;       // 角色等级
   num: number;         // 角色数量

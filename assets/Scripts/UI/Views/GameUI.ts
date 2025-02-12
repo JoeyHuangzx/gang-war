@@ -84,16 +84,23 @@ export class GameUI extends BaseUI<GameUIData> {
     this.goldCount.string = this.playerData.getPlayerInfo().gold.toString();
     this.levelUnlockTip.string = `<color=#ffffff>第${DataManager.getInstance().nextUnlockLevel()}关解锁</color><color=#0fff00>${DataManager.getInstance().nextUnlockCharacter()}</color>`;
     this.currentLevel.string = `第${this.playerData.getPlayerInfo().currentLevel}关`;
-    this.ourPower.string = '100';
-    this.enemyPower.string = '100';
+    this.ourPower.string = DataManager.getInstance().calculatePower().toString();
+    this.enemyPower.string = DataManager.getInstance().calculateEnemyPower().toString();
     this.onlineReward.string = this.playerData.getOnlineReward().toString();
     this.buyCharacter.string = this.playerData.getBuyFighterPrice().toString();
     this.buySlot.string = this.playerData.getBuyCellPrice().toString();
     this.startSwing();
 
-    this.rewardButton.getComponentsInChildren(Sprite).forEach((_sprite)=>{
-      _sprite.grayscale=true;
-    })
+    this.setSpriteGray(this.rewardButton,true);
+    this.setSpriteGray(this.buyCharacterButton,true);
+    this.setSpriteGray(this.buySlotButton,true);
+  }
+
+  // sprite置灰
+  private setSpriteGray(spriteNode: Node, isGray: boolean) {
+    spriteNode.getComponentsInChildren(Sprite).forEach((_sprite) => {
+      _sprite.grayscale = isGray;
+    });
   }
 
 
