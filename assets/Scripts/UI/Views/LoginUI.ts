@@ -57,6 +57,7 @@ export class LoginUI extends BaseUI {
     
     director.loadScene('main', () => {
       LogManager.info('加载 main 场景完成');
+      GameManager.getInstance().initManagers();
       UIManager.getInstance().showUI<GameUIData>(UIType.GameUI, { gold: 100, level: 1 });
     });
   }

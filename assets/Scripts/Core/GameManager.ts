@@ -1,10 +1,16 @@
+import { find, Node } from "cc";
 import { FighterData, LevelData } from "../Datas/CsvConfig";
+import { GridManager } from "../Logic/Map/GridManager";
 import { CSVManager } from "./CSVManager";
 import { DataManager } from "./DataManager";
+import { SoldierManager } from "./SoldierManager";
 
 
 export class GameManager {
     private static _instance: GameManager;
+
+    public gridManager:GridManager;
+    public gameNode:Node=null;
 
     private constructor() {
     }
@@ -17,9 +23,13 @@ export class GameManager {
     }
 
     initManagers() {
-        DataManager.getInstance().init();
+        this.gameNode=find('game');
+        this.gridManager=find('newMap01')?.getComponent(GridManager);
         // 初始化关卡管理器
         // 初始化兵种管理器
+        this.gridManager.initGrid();
+        // GridManager.getInstance().initGrid();
+        SoldierManager.getInstance().initData();
     }
 
     startGame() {

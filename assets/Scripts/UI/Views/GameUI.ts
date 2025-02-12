@@ -1,9 +1,11 @@
-import { _decorator, CCClass, CCInteger, Component, Enum, Label, Node, RichText, tween, Vec3 } from 'cc';
+import { _decorator, CCClass, CCInteger, Component, Enum, Label, Node, RichText, Sprite, tween, Vec3 } from 'cc';
 import { BaseUI } from './BaseUI';
 import { UIManager } from '../UIManager';
 import { UIType } from '../Enum/UIEnum';
 import { PlayerData } from '../../Core/PlayerData';
 import { DataManager } from '../../Core/DataManager';
+import { EventManager } from '../../Core/EventManager';
+import { EventName } from '../../Global/EventName';
 const { ccclass, property } = _decorator;
 
 /** GameUI 的数据结构 */
@@ -88,6 +90,10 @@ export class GameUI extends BaseUI<GameUIData> {
     this.buyCharacter.string = this.playerData.getBuyFighterPrice().toString();
     this.buySlot.string = this.playerData.getBuyCellPrice().toString();
     this.startSwing();
+
+    this.rewardButton.getComponentsInChildren(Sprite).forEach((_sprite)=>{
+      _sprite.grayscale=true;
+    })
   }
 
 
@@ -111,6 +117,7 @@ export class GameUI extends BaseUI<GameUIData> {
   // 购买槽位按钮点击事件
   onBuySlotButtonClick() {
     console.log('buySlotButtonClick');
+    EventManager.emit(EventName.ADD_GRID);
   }
 
   update(deltaTime: number) {
