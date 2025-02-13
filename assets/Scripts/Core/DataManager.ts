@@ -47,7 +47,7 @@ export class DataManager {
   }
 
   public nextUnlockLevel() {
-    let currentLevel = PlayerData.getInstance().getPlayerInfo().currentLevel;
+    let currentLevel = PlayerData.getInstance().UserData.currentLevel;
     let unlock = -1;
     // 根据levelMap里的unlock数据，找到下一个解锁的兵种
     for (let i = currentLevel; i <= this.levelMap.size; i++) {
@@ -61,14 +61,15 @@ export class DataManager {
     return unlock;
   }
 
-  public nextUnlockCharacter(): string {
+  public nextUnlockCharacter(): FighterData {
     const level = this.nextUnlockLevel();
-    const nextUnlockCharacter = this.fighterMap.get(Number(this.levelMap.get(level).unlock));
+    const id=this.levelMap.get(level).unlock;
+    const nextUnlockCharacter = this.getFighterData(Number(id));
     // 需要判断空值
     if (!nextUnlockCharacter) {
       return null;
     }
-    return nextUnlockCharacter.name;
+    return nextUnlockCharacter;
   }
 
   public getFighterData(id: number): FighterData {
@@ -77,9 +78,13 @@ export class DataManager {
 
   /** 根据当前阵容计算战力 */
   public calculatePower() {
-    const currentFormation = PlayerData.getInstance().UserData.formation;
+    const currentFormation = PlayerData.getInstance().UserData.formation.filter(o=>o.soldierId!==undefined);
+    LogManager.debug('currentFormation', currentFormation);
     const power= currentFormation.reduce((acc, curr) => {
-      return acc+Number(this.getFighterData(curr.soldierId).fight);
+      if(curr.soldierId===null){
+        return acc;
+      }
+      return acc+this.getFighterData(curr.soldierId).fight;
     },0)
     return power;
   }
@@ -97,7 +102,7 @@ export class DataManager {
       enemyFormation.push(_formation);
     }
     const power= enemyFormation.reduce((acc, curr) => {
-      return acc+Number(this.getFighterData(curr.soldierId).fight);
+      return acc+this.getFighterData(curr.soldierId).fight;
     },0)
     return power;
   }

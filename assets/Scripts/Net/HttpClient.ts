@@ -61,8 +61,8 @@ class HttpClient {
     });
   }
   // 更新用户数据
-  async updateUser(id: number, updateData: Partial<UserData>): Promise<any | null> {
-    return this.request<any>(`/users/${id.toString()}`, {
+  async updateUser(id: string, updateData: Partial<UserData>): Promise<any | null> {
+    return this.request<any>(`/users/${id}`, {
       method: 'PUT',
       body: JSON.stringify(updateData),
     });

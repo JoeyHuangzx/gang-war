@@ -2,6 +2,7 @@ import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { BaseUI } from './BaseUI';
 import { UIManager } from '../UIManager';
 import { UIType } from '../Enum/UIEnum';
+import { LogManager } from '../../Core/LogManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('FightUI')
@@ -35,7 +36,7 @@ export class FightUI extends BaseUI {
   progressIcon: Sprite = null;
 
   public init(data?: any): void {
-    console.log('FightUI 初始化', data);
+    LogManager.info('FightUI 初始化', data);
     this.addListener();
   }
 
@@ -45,13 +46,13 @@ export class FightUI extends BaseUI {
   }
 
   private onRestartButtonClick() {
-    console.log('重新开始');
+    LogManager.info('重新开始');
     UIManager.getInstance().showUI(UIType.GameUI);
     UIManager.getInstance().hideUI(UIType.FightUI);
   }
 
   private onSkillButtonClick() {
-    console.log('技能');
+    LogManager.info('技能');
   }
 
   update(deltaTime: number) {}

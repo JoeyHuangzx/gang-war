@@ -1,4 +1,4 @@
-import { _decorator, CCClass, CCInteger, Component, Enum, Label, Node, RichText, Sprite, tween, Vec3 } from 'cc';
+import { _decorator, CCClass, CCInteger, Component, Enum, Label, math, Node, RichText, Sprite, tween, Vec3 } from 'cc';
 import { BaseUI } from './BaseUI';
 import { UIManager } from '../UIManager';
 import { UIType } from '../Enum/UIEnum';
@@ -6,6 +6,7 @@ import { PlayerData } from '../../Core/PlayerData';
 import { DataManager } from '../../Core/DataManager';
 import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
+import { LogManager } from '../../Core/LogManager';
 const { ccclass, property } = _decorator;
 
 /** GameUI 的数据结构 */
@@ -31,13 +32,13 @@ export class GameUI extends BaseUI<GameUIData> {
   enemyPower: Label = null;
 
   @property(Label)
-  onlineReward:Label = null;
+  onlineReward: Label = null;
 
   @property(Label)
-  buyCharacter:Label = null;
+  buyCharacter: Label = null;
 
   @property(Label)
-  buySlot:Label = null;
+  buySlot: Label = null;
 
   // 关卡解锁tip
   @property(RichText)
@@ -60,13 +61,12 @@ export class GameUI extends BaseUI<GameUIData> {
   @property(Node)
   pointer: Node = null;
 
-  private minAngle: number = -60;   // 最小角度
-  private maxAngle: number = 60;  // 最大角度
-  private duration: number = 0.5;  // 单次摆动时间
-  private swingTween = null;       // 缓存 Tween 以便控制
+  private minAngle: number = -60; // 最小角度
+  private maxAngle: number = 60; // 最大角度
+  private duration: number = 0.5; // 单次摆动时间
+  private swingTween = null; // 缓存 Tween 以便控制
 
-  playerData:PlayerData;
-
+  playerData: PlayerData;
 
   addListener() {
     //侦听按钮事件
@@ -74,62 +74,87 @@ export class GameUI extends BaseUI<GameUIData> {
     this.rewardButton.on(Node.EventType.TOUCH_END, this.onRewardButtonClick, this);
     this.buyCharacterButton.on(Node.EventType.TOUCH_END, this.onBuyCharacterButtonClick, this);
     this.buySlotButton.on(Node.EventType.TOUCH_END, this.onBuySlotButtonClick, this);
+    EventManager.on(EventName.GOLD_UPDATE, this.goldUpdateHandle, this);
+    EventManager.on(EventName.ONLINE_REWARD_UPDATE, this.onlineRewardUpdateHandle, this);
   }
 
   /** 初始化UI，可以传入数据 */
   public init(data?: GameUIData): void {
     this.playerData = PlayerData.getInstance();
-    console.log("StartUI 初始化", data);
+    LogManager.info('StartUI 初始化', data);
     this.addListener();
-    this.goldCount.string = this.playerData.getPlayerInfo().gold.toString();
-    this.levelUnlockTip.string = `<color=#ffffff>第${DataManager.getInstance().nextUnlockLevel()}关解锁</color><color=#0fff00>${DataManager.getInstance().nextUnlockCharacter()}</color>`;
-    this.currentLevel.string = `第${this.playerData.getPlayerInfo().currentLevel}关`;
+
+    this.levelUnlockTip.string = `<color=#ffffff>第${DataManager.getInstance().nextUnlockLevel()}关解锁</color><color=#0fff00>${DataManager.getInstance().nextUnlockCharacter().name}</color>`;
+    this.currentLevel.string = `第${this.playerData.UserData.currentLevel}关`;
     this.ourPower.string = DataManager.getInstance().calculatePower().toString();
     this.enemyPower.string = DataManager.getInstance().calculateEnemyPower().toString();
-    this.onlineReward.string = this.playerData.getOnlineReward().toString();
-    this.buyCharacter.string = this.playerData.getBuyFighterPrice().toString();
-    this.buySlot.string = this.playerData.getBuyCellPrice().toString();
-    this.startSwing();
 
-    this.setSpriteGray(this.rewardButton,true);
-    this.setSpriteGray(this.buyCharacterButton,true);
-    this.setSpriteGray(this.buySlotButton,true);
+    this.startSwing();
+    this.goldUpdateHandle();
+  }
+
+  public checkButtonVisible() {
+    const isFighterGray = this.playerData.UserData.gold < this.playerData.getBuySoldierPrice();
+    const isCellGray = this.playerData.UserData.gold < this.playerData.getBuyCellPrice();
+    this.buyCharacter.string = this.playerData.getBuySoldierPrice().toString();
+    this.buySlot.string = this.playerData.getBuyCellPrice().toString();
+    this.setSpriteGray(this.buyCharacterButton, isFighterGray);
+    this.setSpriteGray(this.buySlotButton, isCellGray);
+    this.onlineRewardUpdateHandle();
+    const _formation=this.playerData.UserData.formation.find(o=>o.soldierId===undefined);
+    if(!_formation){
+      this.buyCharacter.string='格子不足';
+      this.setSpriteGray(this.buyCharacterButton, true);
+    }
+  }
+
+  public goldUpdateHandle() {
+    this.goldCount.string = `${Math.floor(this.playerData.UserData.gold)}`;
+    this.checkButtonVisible();
+  }
+
+  public onlineRewardUpdateHandle() {
+    this.onlineReward.string = `${Math.floor(this.playerData.getOnlineReward())}`;
+    this.setSpriteGray(this.rewardButton, this.playerData.getOnlineReward() < 2);
   }
 
   // sprite置灰
   private setSpriteGray(spriteNode: Node, isGray: boolean) {
-    spriteNode.getComponentsInChildren(Sprite).forEach((_sprite) => {
+    spriteNode.getComponentsInChildren(Sprite).forEach(_sprite => {
       _sprite.grayscale = isGray;
     });
   }
 
-
   // 开始按钮点击事件
   onStartButtonClick() {
-    console.log('startButtonClick');
+    LogManager.info('startButtonClick');
     UIManager.getInstance().showUI(UIType.FightUI);
     UIManager.getInstance().hideUI(UIType.GameUI);
   }
 
   // 领取奖励按钮点击事件
   onRewardButtonClick() {
-    console.log('rewardButtonClick');
+    if(this.rewardButton.getComponentInChildren(Sprite).grayscale) return;
+    LogManager.info('rewardButtonClick');
+    this.playerData.updateGold(this.playerData.getOnlineReward());
+    this.playerData.reduceOnlineReward();
   }
 
   // 购买角色按钮点击事件
   onBuyCharacterButtonClick() {
-    console.log('buyCharacterButtonClick');
+    if(this.buyCharacterButton.getComponentInChildren(Sprite).grayscale) return;
+    LogManager.info('buyCharacterButtonClick');
+    this.playerData.buySoldier(DataManager.getInstance().nextUnlockCharacter().ID);
   }
 
   // 购买槽位按钮点击事件
   onBuySlotButtonClick() {
-    console.log('buySlotButtonClick');
-    EventManager.emit(EventName.ADD_GRID);
+    if(this.buySlotButton.getComponentInChildren(Sprite).grayscale) return;
+    LogManager.info('buySlotButtonClick');
+    this.playerData.buyCell();
   }
 
-  update(deltaTime: number) {
-
-  }
+  update(deltaTime: number) {}
 
   /** 启动无限摆动 */
   private startSwing(): void {
@@ -138,8 +163,8 @@ export class GameUI extends BaseUI<GameUIData> {
     this.swingTween = tween(this.pointer)
       .repeatForever(
         tween()
-          .to(this.duration, { eulerAngles: new Vec3(0, 0, this.maxAngle) }, { easing: "sineInOut" }) // 旋转到最大角
-          .to(this.duration, { eulerAngles: new Vec3(0, 0, this.minAngle) }, { easing: "sineInOut" }) // 旋转到最小角
+          .to(this.duration, { eulerAngles: new Vec3(0, 0, this.maxAngle) }, { easing: 'sineInOut' }) // 旋转到最大角
+          .to(this.duration, { eulerAngles: new Vec3(0, 0, this.minAngle) }, { easing: 'sineInOut' }), // 旋转到最小角
       )
       .start();
   }
@@ -159,5 +184,6 @@ export class GameUI extends BaseUI<GameUIData> {
     this.rewardButton.off(Node.EventType.TOUCH_END, this.onRewardButtonClick, this);
     this.buyCharacterButton.off(Node.EventType.TOUCH_END, this.onBuyCharacterButtonClick, this);
     this.buySlotButton.off(Node.EventType.TOUCH_END, this.onBuySlotButtonClick, this);
+    EventManager.off(EventName.GOLD_UPDATE, this.goldUpdateHandle);
   }
 }

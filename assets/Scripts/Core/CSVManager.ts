@@ -28,7 +28,7 @@ export class CSVManager {
       .map(line => line.trim())
       .filter(line => line.length > 0);
     if (lines.length < 4) return []; // 至少需要 4 行（字段说明、字段名、字段类型、数据）
-    //TODO: 增加字段类型判断
+    const types=lines[1].split(',');
     const headers = lines[2].split(','); // 第三行是字段名
     const dataLines = lines.slice(3); // 从第四行开始是数据
 
@@ -36,7 +36,9 @@ export class CSVManager {
       const values = line.split(',');
       const obj: any = {};
       headers.forEach((header, index) => {
-        obj[header.trim()] = values[index]?.trim();
+        const value=values[index]?.trim();
+        const type=types[index]?.trim();
+        obj[header.trim()] = this.convertValue(value,type);
       });
       return obj as T;
     });
@@ -70,4 +72,17 @@ export class CSVManager {
   public getData<T>(fileName: string): T[] {
     return this.data.get(fileName) || [];
   }
+
+  private convertValue(value:string,type:string):any{
+    switch(type){
+      case 'number':
+        return Number(value);
+      case 'string':
+        return value;
+      case 'boolean':
+        return value==='true';
+      default:
+        return value.trim();
+    }
+  } 
 }

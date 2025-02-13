@@ -50,6 +50,7 @@ export class LoginUI extends BaseUI {
     const data = await HttpClient.getInstance().createUser(this.userName.string);
     LogManager.debug('创建用户', data);
     this.enterGame(data.data);
+    PlayerData.getInstance().savePlayerInfo();
   }
 
   enterGame(userData: UserData) {

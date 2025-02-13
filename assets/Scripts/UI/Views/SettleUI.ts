@@ -2,6 +2,7 @@ import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { BaseUI } from './BaseUI';
 import { UIType } from '../Enum/UIEnum';
 import { UIManager } from '../UIManager';
+import { LogManager } from '../../Core/LogManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('SettleUI')
@@ -19,12 +20,12 @@ export class SettleUI extends BaseUI {
     public goldLabel: Label;
 
     public init(data?: any): void {
-        console.log('SettleUI 初始化', data);
+        LogManager.info('SettleUI 初始化', data);
         this.againButton.on(Node.EventType.TOUCH_END, this.onAgainButtonClick, this);
     }
 
     private onAgainButtonClick() {
-        console.log('再来一局');
+        LogManager.info('再来一局');
         UIManager.getInstance().showUI(UIType.GameUI);
         UIManager.getInstance().hideUI(UIType.SettleUI);
     }

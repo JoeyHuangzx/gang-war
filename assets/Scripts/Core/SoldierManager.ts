@@ -5,7 +5,7 @@ import { Soldier } from '../Logic/Soldiers/Soldier';
 import { GameManager } from './GameManager';
 import { Cell } from '../Logic/Map/Cell';
 import { PlayerData } from './PlayerData';
-import { UserData } from '../Net/NetApi';
+import { Formation, UserData } from '../Net/NetApi';
 import { DataManager } from './DataManager';
 
 const { ccclass, property } = _decorator;
@@ -35,6 +35,19 @@ export class SoldierManager {
       }
       this.loadSoldier(item.id, _soldierPrefabName);
     });
+  }
+
+  /**
+   * 新增阵容（格子）
+   */
+  public addCell(){
+    GameManager.getInstance().gridManager.generateGrids(1);
+
+  }
+
+  public addSoldier(formation:Formation){
+    const _soldierPrefabName = DataManager.getInstance().getFighterData(formation.soldierId).prefabName; 
+    this.loadSoldier(formation.id, _soldierPrefabName);
   }
 
   // 加载士兵

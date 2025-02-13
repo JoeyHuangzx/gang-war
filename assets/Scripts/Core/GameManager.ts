@@ -4,6 +4,7 @@ import { GridManager } from "../Logic/Map/GridManager";
 import { CSVManager } from "./CSVManager";
 import { DataManager } from "./DataManager";
 import { SoldierManager } from "./SoldierManager";
+import { PlayerData } from "./PlayerData";
 
 
 export class GameManager {
@@ -11,6 +12,7 @@ export class GameManager {
 
     public gridManager:GridManager;
     public gameNode:Node=null;
+    public onlineInterval=null;
 
     private constructor() {
     }
@@ -29,6 +31,14 @@ export class GameManager {
         // 初始化兵种管理器
         this.gridManager=find('newMap01')?.getComponent(GridManager);
         SoldierManager.getInstance().initData();
+        this.startOnlineReward();
+    }
+
+    startOnlineReward(){
+        this.onlineInterval=setInterval(()=>{
+            PlayerData.getInstance().updateOnlineReward(1000);
+
+        },1000)
     }
 
     startGame() {

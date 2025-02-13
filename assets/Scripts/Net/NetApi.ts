@@ -17,7 +17,7 @@ export interface CreateUserResponse extends ApiResponse<UserData> {
 
 export interface UserData {
   /** 玩家ID */
-    id: number;
+    id: string;
     /** 玩家名 */
     name:string;
     /** 金币数量 */
