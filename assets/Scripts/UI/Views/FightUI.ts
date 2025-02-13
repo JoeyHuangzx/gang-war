@@ -3,6 +3,7 @@ import { BaseUI } from './BaseUI';
 import { UIManager } from '../UIManager';
 import { UIType } from '../Enum/UIEnum';
 import { LogManager } from '../../Core/LogManager';
+import { Camera } from '../../Logic/Camera';
 const { ccclass, property } = _decorator;
 
 @ccclass('FightUI')
@@ -49,6 +50,7 @@ export class FightUI extends BaseUI {
     LogManager.info('重新开始');
     UIManager.getInstance().showUI(UIType.GameUI);
     UIManager.getInstance().hideUI(UIType.FightUI);
+    Camera.instance.endGame();
   }
 
   private onSkillButtonClick() {

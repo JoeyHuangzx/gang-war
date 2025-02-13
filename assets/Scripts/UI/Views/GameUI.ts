@@ -7,6 +7,7 @@ import { DataManager } from '../../Core/DataManager';
 import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
 import { LogManager } from '../../Core/LogManager';
+import { Camera } from '../../Logic/Camera';
 const { ccclass, property } = _decorator;
 
 /** GameUI 的数据结构 */
@@ -130,6 +131,7 @@ export class GameUI extends BaseUI<GameUIData> {
     LogManager.info('startButtonClick');
     UIManager.getInstance().showUI(UIType.FightUI);
     UIManager.getInstance().hideUI(UIType.GameUI);
+    Camera.instance.startCameraMovement();
   }
 
   // 领取奖励按钮点击事件

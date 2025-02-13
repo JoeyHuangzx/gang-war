@@ -15,19 +15,19 @@ class LogManager {
   }
 
   // 输出 DEBUG 级别的日志
-  public static debug(message: string, ...optionalParams: any[]) {
+  public static debug(message: string | number, ...optionalParams: any[]) {
     if (this.currentLevel <= LogLevel.DEBUG) {
       console.log('%c[DEBUG] %s', 'color:rgb(182, 178, 178);', message, ...optionalParams);
     }
   }
   // 输出 INFO 级别的日志
-  public static info(message: string, ...optionalParams: any[]) {
+  public static info(message: string | number, ...optionalParams: any[]) {
     if (this.currentLevel <= LogLevel.INFO) {
       console.log('%c[INFO] %s', 'color:rgb(76, 37, 204);', message, ...optionalParams);
     }
   }
   // 输出 WARN 级别的日志
-  public static warn(message: string, ...optionalParams: any[]) {
+  public static warn(message: string | number, ...optionalParams: any[]) {
     if (this.currentLevel <= LogLevel.WARN) {
       console.log('%c[WARN] %s', 'color: #FFA500;', message, ...optionalParams);
     }
