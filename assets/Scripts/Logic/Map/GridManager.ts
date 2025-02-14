@@ -3,21 +3,22 @@ import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
 import { LogManager } from '../../Core/LogManager';
 import { GameManager } from '../../Core/GameManager';
+import { FormationEnum } from '../../Global/FormationEnum';
 
 const { ccclass, property } = _decorator;
 
 @ccclass('GridManager')
 export class GridManager extends Component {
-
   @property(Prefab)
   gridPrefab: Prefab = null!; // 格子预制体
   private gridSize: number = 1.5; // 每个格子的大小
   private basePosition: Vec3 = new Vec3(-10, 0, 0); // 初始位置（最下方中间）
-  private gridNodes: Node[] = []; // 存储所有格子节点
-  public gridMap: Map<number, Node> = new Map();
+  public gridMap: Map<number, Node> = new Map(); // 存储所有格子节点
+  public enemyGridMap: Map<number, Node> = new Map(); // 存储所有敌方阵容的节点
+  private formationType: FormationEnum = null;
 
   start() {
-    EventManager.on(EventName.ADD_GRID,this.addGrid,this);
+    // EventManager.on(EventName.ADD_GRID, this.addGrid, this);
     // EventManager.on(EventName.GENERATE_GRID,this.generateGrids,this);
   }
 
@@ -31,13 +32,13 @@ export class GridManager extends Component {
       width = 4;
       height = 5;
       baseIndex = index - 9;
-      this.basePosition = new Vec3(-14.5, 0, 0);
+      this.basePosition = new Vec3(this.formationType === FormationEnum.Enemy ? 14.5 : -14.5, 0, 0);
     }
     if (index >= 50) {
       width = 5;
       height = Math.ceil(index / width);
       baseIndex = index - 50;
-      this.basePosition = new Vec3(-20, 0, 0);
+      this.basePosition = new Vec3(this.formationType === FormationEnum.Enemy ? 20 : -20, 0, 0);
     }
 
     layer = Math.floor(baseIndex / height);
@@ -76,26 +77,27 @@ export class GridManager extends Component {
   }
 
   /** 生成格子 */
-  generateGrids(count: number) {
-    if(!this.gridPrefab || !GameManager.getInstance().gameNode){
+  generateGrids(count: number, _formationType: FormationEnum) {
+    if (!this.gridPrefab || !GameManager.getInstance().gameNode) {
       LogManager.error('gridPrefab or parent is null');
       return;
     }
+    this.formationType = _formationType;
+    this.basePosition = new Vec3(this.formationType === FormationEnum.Enemy ? 10 : -10, 0, 0);
+    
     for (let i = 0; i < count; i++) {
       let gridNode = instantiate(this.gridPrefab);
-      gridNode.setPosition(this.getGridPosition(this.gridNodes.length));
+      const len = this.formationType === FormationEnum.Enemy ? this.enemyGridMap.size : this.gridMap.size;
+      gridNode.setPosition(this.getGridPosition(len));
       GameManager.getInstance().gameNode.addChild(gridNode);
-      this.gridNodes.push(gridNode);
-      this.gridMap.set(this.gridNodes.length, gridNode);
+      this.formationType === FormationEnum.Enemy
+        ? this.enemyGridMap.set(len+1, gridNode)
+        : this.gridMap.set(len+1, gridNode);
     }
   }
 
-  /** 购买格子 */
-  addGrid() {
-    this.generateGrids(1);
-  }
 
   protected onDestroy(): void {
-    EventManager.off(EventName.ADD_GRID,this.addGrid);
+    // EventManager.off(EventName.ADD_GRID, this.addGrid);
   }
 }

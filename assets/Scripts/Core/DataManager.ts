@@ -7,9 +7,6 @@ import { PlayerData } from './PlayerData';
 export class DataManager {
   private static _instance: DataManager;
 
-  public levelMap: Map<number, LevelData> = new Map();
-  public fighterMap: Map<number, FighterData> = new Map();
-
   private constructor() {}
   public static getInstance(): DataManager {
     if (!this._instance) {
@@ -18,32 +15,35 @@ export class DataManager {
     return this._instance;
   }
 
-  public init() {
-    this.loadFighterData();
-    this.loadLevelData();
+  public levelMap: Map<number, LevelData> = new Map();
+  public fighterMap: Map<number, FighterData> = new Map();
+  public enemyFormation: Formation[] = [];
+
+  public async loadData(){
+    const promises = [CSVManager.getInstance().loadCSV<FighterData>('fighter'), CSVManager.getInstance().loadCSV<LevelData>('level')];
+    const datas=await Promise.all(promises);
+    this.loadFighterData(datas[0]);
+    this.loadLevelData(datas[1]);
   }
 
-  private loadFighterData() {
-    CSVManager.getInstance()
-      .loadCSV<FighterData>('fighter')
-      .then(data => {
-        data.forEach(item => {
-          this.fighterMap.set(Number(item.ID), item);
-        });
-        LogManager.debug('兵种数据加载完成', this.fighterMap);
-      });
+  public async init() {
+    this.parseEnemyFormation();
   }
 
-  
-  private loadLevelData() {
-    CSVManager.getInstance()
-      .loadCSV<LevelData>('level')
-      .then(data => {
-        data.forEach(item => {
-          this.levelMap.set(Number(item.ID), item);
-        });
-        LogManager.debug('关卡数据加载完成', this.levelMap);
-      });
+  private async loadFighterData(data) {
+    // const data: FighterData[] = await CSVManager.getInstance().loadCSV<FighterData>('fighter');
+    data.forEach(item => {
+      this.fighterMap.set(Number(item.ID), item);
+    });
+    LogManager.debug('兵种数据加载完成', this.fighterMap);
+  }
+
+  private async loadLevelData(data) {
+    // const data = await CSVManager.getInstance().loadCSV<LevelData>('level');
+    data.forEach(item => {
+      this.levelMap.set(Number(item.ID), item);
+    });
+    LogManager.debug('关卡数据加载完成', this.levelMap);
   }
 
   public nextUnlockLevel() {
@@ -63,7 +63,7 @@ export class DataManager {
 
   public nextUnlockCharacter(): FighterData {
     const level = this.nextUnlockLevel();
-    const id=this.levelMap.get(level).unlock;
+    const id = this.levelMap.get(level).unlock;
     const nextUnlockCharacter = this.getFighterData(Number(id));
     // 需要判断空值
     if (!nextUnlockCharacter) {
@@ -78,32 +78,38 @@ export class DataManager {
 
   /** 根据当前阵容计算战力 */
   public calculatePower() {
-    const currentFormation = PlayerData.getInstance().UserData.formation.filter(o=>o.soldierId!==undefined);
+    const currentFormation = PlayerData.getInstance().UserData.formation.filter(o => o.soldierId !== undefined);
     LogManager.debug('currentFormation', currentFormation);
-    const power= currentFormation.reduce((acc, curr) => {
-      if(curr.soldierId===null){
+    const power = currentFormation.reduce((acc, curr) => {
+      if (curr.soldierId === null) {
         return acc;
       }
-      return acc+this.getFighterData(curr.soldierId).fight;
-    },0)
+      return acc + this.getFighterData(curr.soldierId).fight;
+    }, 0);
     return power;
+  }
+
+  parseEnemyFormation(): Formation[] {
+    const currentLevel = PlayerData.getInstance().UserData.currentLevel;
+    const levelData = this.levelMap.get(currentLevel);
+    const enemyFormation = [];
+    const tempArr = levelData.formation.split('_');
+    for (let i = 0; i < tempArr.length; i++) {
+      const itemArr = tempArr[i].split('#');
+      const _formation: Formation = { id: Number(itemArr[1]), soldierId: Number(itemArr[0]) };
+      enemyFormation.push(_formation);
+    }
+    this.enemyFormation = enemyFormation;
+    return enemyFormation;
   }
 
   /** 计算敌方战力 */
   public calculateEnemyPower() {
-    const currentLevel = PlayerData.getInstance().UserData.currentLevel;
-    const levelData = this.levelMap.get(currentLevel);
-    
-    const enemyFormation =[]; 
-    const tempArr=levelData.formation.split('_');
-    for (let i = 0; i < tempArr.length; i++) {
-      const itemArr = tempArr[i].split('#');
-      const _formation:Formation={id:Number(itemArr[1]),soldierId:Number(itemArr[0])};
-      enemyFormation.push(_formation);
-    }
-    const power= enemyFormation.reduce((acc, curr) => {
-      return acc+this.getFighterData(curr.soldierId).fight;
-    },0)
+    // const enemyFormation = this.parseEnemyFormation();
+
+    const power = this.enemyFormation.reduce((acc, curr) => {
+      return acc + this.getFighterData(curr.soldierId).fight;
+    }, 0);
     return power;
   }
 }

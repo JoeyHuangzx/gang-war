@@ -5,93 +5,141 @@ const { ccclass, property } = _decorator;
 
 @ccclass('SoldierModel')
 export class SoldierModel extends Component {
-    @property(SkeletalAnimation)
-    public skeletalAnimation: SkeletalAnimation = null;
+  @property(SkeletalAnimation)
+  public skeletalAnimation: SkeletalAnimation = null;
 
-    @property
-    moveSpeed: number = 5; // 移动速度
+  @property
+  moveSpeed: number = 3; // 移动速度
+  @property(Number) private attackRange: number = 2; // 攻击范围
+  private moveDirection: Vec3 = new Vec3(0, 0, 0);
+  private isMovement: boolean = false;
 
-    private moveDirection: Vec3 = new Vec3(0, 0, 0);
+  public enemies: Node[] = []; // 敌方小兵列表
+  private targetEnemy: Node | null = null; // 当前目标敌人
+  private isAttacking: boolean = false; // 是否在攻击
+  ticker = 0;
+  findEnemyDt = 1;
 
-    start() {
-        this.skeletalAnimation.on(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
-        //测试动画播放
-        this.playAnimation(SoldierAnimationEnum.Idle);
-        // this.scheduleOnce(() => {
-        //     this.playAnimation(SoldierAnimationEnum.Run);
-        //     this.scheduleOnce(() => {
-        //         this.playAnimation(SoldierAnimationEnum.Dead);
-        //     }, 3);
-        // }, 3);
+  start() {
+    this.skeletalAnimation.on(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
+    //测试动画播放
+    this.playAnimation(SoldierAnimationEnum.Idle);
+    this.moveDirection = this.node.forward.multiplyScalar(-1);
+    input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
+    input.on(Input.EventType.KEY_PRESSING, this.onKeyDown, this);
+    input.on(Input.EventType.KEY_UP, this.onkeyUp, this);
+  }
 
-        input.on(Input.EventType.KEY_PRESSING, this.onKeyDown, this);
-        input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
-        input.on(Input.EventType.KEY_UP, this.onKeyUp, this);
+  private onKeyDown(event: any) {
+    switch (event.keyCode) {
+      case KeyCode.KEY_Q:
+        this.isMovement = true;
+        break;
+      case KeyCode.KEY_R:
+        this.node.setWorldPosition(-10, 0, 0);
+        this.isMovement = true;
+        break;
+    }
+  }
+
+  private onkeyUp(event: any) {
+    this.isMovement = false;
+    this.playAnimation(SoldierAnimationEnum.Idle);
+  }
+
+  update(deltaTime: number) {
+    this.ticker += deltaTime;
+    /* if (this.moveDirection.length() > 0 && this.isMovement) {
+      this.playAnimation(SoldierAnimationEnum.Run);
+      const moveStep = this.moveDirection.normalize().multiplyScalar(this.moveSpeed * deltaTime);
+      const worldPos = this.node.position.add(moveStep);
+      LogManager.debug(`move to:${worldPos.x},${worldPos.z}`);
+      this.node.setWorldPosition(worldPos);
+    } 
+    if (this.ticker > this.findEnemyDt) {
+      this.ticker = 0;
+      this.findClosestEnemy();
+    }*/
+    if (this.isAttacking || !this.targetEnemy) return;
+
+    const myPos = this.node.position;
+    const targetPos = this.targetEnemy.position;
+    const distance = Vec3.distance(myPos, targetPos);
+
+    if (distance > this.attackRange) {
+      this.moveToTarget(targetPos, deltaTime);
+    } else {
+      this.playAnimation(SoldierAnimationEnum.Attack);
+      this.startAttack(); // 进入攻击
+    }
+  }
+
+  /** 让小兵朝目标移动 */
+  private moveToTarget(targetPos: Vec3, dt: number): void {
+    const direction = new Vec3();
+    Vec3.subtract(direction, targetPos, this.node.position);
+    direction.normalize();
+
+    const moveOffset = new Vec3(direction.x * this.moveSpeed * dt, 0, direction.z * this.moveSpeed * dt);
+
+    const worldPos = this.node.position.add(moveOffset);
+    this.node.setWorldPosition(worldPos);
+    this.playAnimation(SoldierAnimationEnum.Run);
+  }
+
+  /** 计算最近的敌人 */
+  public findClosestEnemy(): void {
+    let closestEnemy: Node | null = null;
+    let minDistance = Infinity;
+
+    for (const enemy of this.enemies) {
+      const distance = Vec3.distance(this.node.position, enemy.position);
+      // LogManager.debug(`mid:${distance}`);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestEnemy = enemy;
+      }
     }
 
-    private onKeyDown(event: any) {
-        LogManager.debug(event.keyCode)
-        switch (event.keyCode) {
-            case KeyCode.ARROW_UP:
-                this.moveDirection.z = 1;
-                break;
-            case KeyCode.ARROW_DOWN:
-                this.moveDirection.z = -1;
-                break;
-            case KeyCode.ARROW_LEFT:
-                this.moveDirection.x = -1;
-                break;
-            case KeyCode.ARROW_RIGHT:
-                this.moveDirection.x = 1;
-                break;
-        }
-    }
+    this.targetEnemy = closestEnemy;
+  }
 
-    private onKeyUp(event: any) {
-        this.playAnimation(SoldierAnimationEnum.Idle);
-        switch (event.keyCode) {
-            case KeyCode.ARROW_UP:
-            case KeyCode.ARROW_DOWN:
-                this.moveDirection.z = 0;
-                break;
-            case KeyCode.ARROW_LEFT:
-            case KeyCode.ARROW_RIGHT:
-                this.moveDirection.x = 0;
-                break;
-        }
-    }
+  /** 进入攻击状态 */
+  private startAttack(): void {
+    this.isAttacking = true;
+    // console.log(`${this.node.name} 开始攻击 ${this.targetEnemy?.name}`);
 
-    update(deltaTime: number) {
-        if (this.moveDirection.length() > 0) {
-            if(!this.isAnimationPlaying(SoldierAnimationEnum.Run)){
-                this.playAnimation(SoldierAnimationEnum.Run);
-            }
-            const moveStep = this.moveDirection.normalize().multiplyScalar(this.moveSpeed * deltaTime);
-            LogManager.debug(moveStep.x.toString(),moveStep.y, moveStep.z);
-            const worldPos = this.node.position.add(moveStep);
-            this.node.setWorldPosition(worldPos);
-        }
-    }
+    // 这里可以添加攻击动画
+    // this.node.getComponent(Animation)?.play("attack");
 
-    private onAnimationFinished() {
-        this.skeletalAnimation.off(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
-    }
+    this.scheduleOnce(() => {
+      // console.log(`${this.node.name} 结束攻击`);
+      this.isAttacking = false;
+      this.findClosestEnemy(); // 继续寻找新的目标
+    }, 1); // 假设攻击间隔 1 秒
+  }
 
-    public playAnimation(name: SoldierAnimationEnum) {
-        this.skeletalAnimation.play(name);
-    }
+  private onAnimationFinished() {
+    this.skeletalAnimation.off(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
+  }
 
-    /**
-     * 判断指定名称的动画是否正在播放
-     * @param animationName 动画名称
-     * @returns 如果正在播放返回 true，否则返回 false
-     */
-    isAnimationPlaying(animationName: SoldierAnimationEnum): boolean {
-        if (!this.skeletalAnimation) {
-            return false;
-        }
-        const animationState = this.skeletalAnimation.getState(animationName);
-        return animationState && animationState.isPlaying;
+  public playAnimation(name: SoldierAnimationEnum) {
+    if (!this.isAnimationPlaying(name)) {
+      this.skeletalAnimation.crossFade(name, 0.3);
+      LogManager.debug(`play animation:${name}`);
     }
+  }
+
+  /**
+   * 判断指定名称的动画是否正在播放
+   * @param animationName 动画名称
+   * @returns 如果正在播放返回 true，否则返回 false
+   */
+  isAnimationPlaying(animationName: SoldierAnimationEnum): boolean {
+    if (!this.skeletalAnimation) {
+      return false;
+    }
+    const animationState = this.skeletalAnimation.getState(animationName);
+    return animationState && animationState.isPlaying;
+  }
 }
-

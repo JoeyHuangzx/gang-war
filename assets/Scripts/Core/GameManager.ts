@@ -26,7 +26,7 @@ export class GameManager {
 
     initManagers() {
         this.gameNode=find('game');
-        
+        DataManager.getInstance().init();
         // 初始化关卡管理器
         // 初始化兵种管理器
         this.gridManager=find('newMap01')?.getComponent(GridManager);

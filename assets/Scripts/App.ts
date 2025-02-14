@@ -9,7 +9,7 @@ export class App extends Component {
   start() {
     //常驻节点
     director.addPersistRootNode(this.node);
-    DataManager.getInstance().init();
+    DataManager.getInstance().loadData();
     director.preloadScene('main', () => {
       LogManager.info('预加载 main 场景完成');
     });
