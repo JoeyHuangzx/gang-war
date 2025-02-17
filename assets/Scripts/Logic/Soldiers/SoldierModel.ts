@@ -1,6 +1,8 @@
-import { _decorator, Component, input, Input, KeyCode, Node, SkeletalAnimation, Vec3 } from 'cc';
+import { _decorator, Component,  input, Input, KeyCode, Node, SkeletalAnimation, Vec3 } from 'cc';
 import { SoldierAnimationEnum } from './SoldierAnimationEnum';
 import { LogManager } from '../../Core/LogManager';
+import { FormationEnum } from '../../Global/FormationEnum';
+import { Quaternion } from '../../Utils/Quaternion';
 const { ccclass, property } = _decorator;
 
 @ccclass('SoldierModel')
@@ -19,6 +21,7 @@ export class SoldierModel extends Component {
   private isAttacking: boolean = false; // 是否在攻击
   ticker = 0;
   findEnemyDt = 1;
+  formation: FormationEnum = FormationEnum.Self;
 
   start() {
     this.skeletalAnimation.on(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
@@ -28,6 +31,11 @@ export class SoldierModel extends Component {
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
     input.on(Input.EventType.KEY_PRESSING, this.onKeyDown, this);
     input.on(Input.EventType.KEY_UP, this.onkeyUp, this);
+    this.node.setScale(new Vec3(0.5,0.5,0.5));
+    if(this.formation === FormationEnum.Enemy){
+      this.node.setWorldRotation(Quaternion.GetQuatFromAngle(new Vec3(0,270,0)));
+    }
+    
   }
 
   private onKeyDown(event: any) {

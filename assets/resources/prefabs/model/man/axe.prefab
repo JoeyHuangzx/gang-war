@@ -799,6 +799,7 @@
       "__id__": 25
     },
     "moveSpeed": 5,
+    "attackRange": 2,
     "_id": ""
   },
   {
