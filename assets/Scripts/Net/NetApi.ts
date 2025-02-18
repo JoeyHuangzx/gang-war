@@ -31,7 +31,7 @@ export interface UserData {
     /** 购买格子的次数 */
     buyCellTimes: number;
     /** 已解锁士兵列表 */
-    unlockSoldier: number[];
+    unlockFighters: number[];
     /** 在线奖励数值 */
     onlineReward: number;
     /** 完成的引导步骤 */
@@ -46,5 +46,5 @@ export interface UserData {
     /** 阵容ID */
     id: number;
     /** 士兵ID,如果为空，就是只买了格子，没买士兵 */
-    soldierId?: number;
+    fighterId?: number;
   }

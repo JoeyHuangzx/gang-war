@@ -1,6 +1,6 @@
 import { _decorator, Component, director, EventKeyboard, input, Input, instantiate, KeyCode, Node, Prefab, Vec3 } from 'cc';
 import { ResourceManager } from '../Core/ResourceManager';
-import { SoldierModel } from '../Logic/Soldiers/SoldierModel';
+import { FighterModel } from '../Logic/Fighters/FighterModel';
 import { FormationEnum } from '../Global/FormationEnum';
 const { ccclass, property } = _decorator;
 
@@ -13,8 +13,8 @@ export class ModelTest extends Component {
 
   async testModel() {
     for (let i = 0; i < 6; i++) {
-      const solider: SoldierModel = await this.createMode(
-        'soldier',
+      const solider: FighterModel = await this.createMode(
+        'fighter',
         new Vec3(i < 3 ? -10 : 10, 0, -1.5 + 1.5 * (i % 3)),
       );
       if (i < 3) {
@@ -23,13 +23,13 @@ export class ModelTest extends Component {
         solider.formation = FormationEnum.Enemy;
       }
     }
-    const soliders = director.getScene().children.filter(node => node.name == 'soldier');
+    const soliders = director.getScene().children.filter(node => node.name == 'fighter');
     for (let i = 0; i < soliders.length; i++) {
-      const solider: SoldierModel = soliders[i].getComponent(SoldierModel);
+      const solider: FighterModel = soliders[i].getComponent(FighterModel);
       if (solider.formation === FormationEnum.Enemy) {
-        solider.enemies = soliders.filter(node => node.getComponent(SoldierModel).formation === FormationEnum.Self);
+        solider.enemies = soliders.filter(node => node.getComponent(FighterModel).formation === FormationEnum.Self);
       } else {
-        solider.enemies = soliders.filter(node => node.getComponent(SoldierModel).formation === FormationEnum.Enemy);
+        solider.enemies = soliders.filter(node => node.getComponent(FighterModel).formation === FormationEnum.Enemy);
       }
       // solider.findClosestEnemy();
     }
@@ -38,9 +38,9 @@ export class ModelTest extends Component {
   onKeyDown(event: EventKeyboard) {
     switch (event.keyCode) {
       case KeyCode.SPACE:
-        const soliders = director.getScene().children.filter(node => node.name == 'soldier');
+        const soliders = director.getScene().children.filter(node => node.name == 'fighter');
         soliders.forEach(solider => {
-          solider.getComponent(SoldierModel).findClosestEnemy();
+          solider.getComponent(FighterModel).findClosestEnemy();
         });
         break;
     }
@@ -52,7 +52,7 @@ export class ModelTest extends Component {
     _node.name = name;
     director.getScene().addChild(_node);
     _node.setWorldPosition(pos);
-    return _node.getComponent(SoldierModel);
+    return _node.getComponent(FighterModel);
   }
 
   update(deltaTime: number) {}

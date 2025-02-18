@@ -1,12 +1,12 @@
 import { _decorator, Component,  input, Input, KeyCode, Node, SkeletalAnimation, Vec3 } from 'cc';
-import { SoldierAnimationEnum } from './SoldierAnimationEnum';
+import { FighterAnimationEnum } from './FighterAnimationEnum';
 import { LogManager } from '../../Core/LogManager';
 import { FormationEnum } from '../../Global/FormationEnum';
 import { Quaternion } from '../../Utils/Quaternion';
 const { ccclass, property } = _decorator;
 
-@ccclass('SoldierModel')
-export class SoldierModel extends Component {
+@ccclass('FighterModel')
+export class FighterModel extends Component {
   @property(SkeletalAnimation)
   public skeletalAnimation: SkeletalAnimation = null;
 
@@ -26,7 +26,7 @@ export class SoldierModel extends Component {
   start() {
     this.skeletalAnimation.on(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
     //测试动画播放
-    this.playAnimation(SoldierAnimationEnum.Idle);
+    this.playAnimation(FighterAnimationEnum.Idle);
     this.moveDirection = this.node.forward.multiplyScalar(-1);
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
     input.on(Input.EventType.KEY_PRESSING, this.onKeyDown, this);
@@ -52,7 +52,7 @@ export class SoldierModel extends Component {
 
   private onkeyUp(event: any) {
     this.isMovement = false;
-    this.playAnimation(SoldierAnimationEnum.Idle);
+    this.playAnimation(FighterAnimationEnum.Idle);
   }
 
   update(deltaTime: number) {
@@ -77,7 +77,7 @@ export class SoldierModel extends Component {
     if (distance > this.attackRange) {
       this.moveToTarget(targetPos, deltaTime);
     } else {
-      this.playAnimation(SoldierAnimationEnum.Attack);
+      this.playAnimation(FighterAnimationEnum.Attack);
       this.startAttack(); // 进入攻击
     }
   }
@@ -92,7 +92,7 @@ export class SoldierModel extends Component {
 
     const worldPos = this.node.position.add(moveOffset);
     this.node.setWorldPosition(worldPos);
-    this.playAnimation(SoldierAnimationEnum.Run);
+    this.playAnimation(FighterAnimationEnum.Run);
   }
 
   /** 计算最近的敌人 */
@@ -118,7 +118,7 @@ export class SoldierModel extends Component {
     // console.log(`${this.node.name} 开始攻击 ${this.targetEnemy?.name}`);
 
     // 这里可以添加攻击动画
-    // this.node.getComponent(Animation)?.play("attack");
+    this.playAnimation(FighterAnimationEnum.Attack);
 
     this.scheduleOnce(() => {
       // console.log(`${this.node.name} 结束攻击`);
@@ -131,7 +131,7 @@ export class SoldierModel extends Component {
     this.skeletalAnimation.off(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
   }
 
-  public playAnimation(name: SoldierAnimationEnum) {
+  public playAnimation(name: FighterAnimationEnum) {
     if (!this.isAnimationPlaying(name)) {
       this.skeletalAnimation.crossFade(name, 0.3);
       LogManager.debug(`play animation:${name}`);
@@ -143,7 +143,7 @@ export class SoldierModel extends Component {
    * @param animationName 动画名称
    * @returns 如果正在播放返回 true，否则返回 false
    */
-  isAnimationPlaying(animationName: SoldierAnimationEnum): boolean {
+  isAnimationPlaying(animationName: FighterAnimationEnum): boolean {
     if (!this.skeletalAnimation) {
       return false;
     }

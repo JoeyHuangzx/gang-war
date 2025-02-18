@@ -1,10 +1,8 @@
 import { find, Node } from "cc";
-import { FighterData, LevelData } from "../Datas/CsvConfig";
 import { GridManager } from "../Logic/Map/GridManager";
-import { CSVManager } from "./CSVManager";
-import { DataManager } from "./DataManager";
-import { SoldierManager } from "./SoldierManager";
+import { FighterManager } from "./FighterManager";
 import { PlayerData } from "./PlayerData";
+import { LevelManager } from "./LevelManager";
 
 
 export class GameManager {
@@ -26,11 +24,11 @@ export class GameManager {
 
     initManagers() {
         this.gameNode=find('game');
-        DataManager.getInstance().init();
+        LevelManager.getInstance().init();
         // 初始化关卡管理器
         // 初始化兵种管理器
         this.gridManager=find('newMap01')?.getComponent(GridManager);
-        SoldierManager.getInstance().initData();
+        FighterManager.getInstance().initData();
         this.startOnlineReward();
     }
 

@@ -1,8 +1,11 @@
 import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
 const { ccclass, property } = _decorator;
 
+/**
+ * 士兵战斗的主要逻辑都在这里
+ */
 @ccclass('Soldier')
-export class Soldier extends Component {
+export class FighterContainer extends Component {
     @property(Node)
     shadow:Node=null;
 

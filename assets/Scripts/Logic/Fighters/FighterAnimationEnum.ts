@@ -1,5 +1,5 @@
 
-export enum SoldierAnimationEnum {
+export enum FighterAnimationEnum {
   Idle='idle',
   Run='run',
   Attack='attack',

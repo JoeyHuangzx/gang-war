@@ -5,7 +5,7 @@ import HttpClient from '../Net/HttpClient';
 import { UserData } from '../Net/NetApi';
 import { EventManager } from './EventManager';
 import { LogManager } from './LogManager';
-import { SoldierManager } from './SoldierManager';
+import { FighterManager } from './FighterManager';
 import StorageManager from './StorageManager';
 
 // 玩家数据类
@@ -48,16 +48,16 @@ export class PlayerData {
   }
 
   // 购买一个角色
-  public buySoldier(soldierId: number): boolean {
-    const _gold = this.getBuySoldierPrice();
+  public buyFighter(fighterId: number): boolean {
+    const _gold = this.getBuyFighterPrice();
     if (this._userData.gold >= _gold) {
       // 假设购买一个角色需要 50 金币
       this.updateGold(-_gold);
       this._userData.buyTimes += 1;
-      const _formation = this._userData.formation.find(o => o.soldierId === undefined);
-      _formation.soldierId = soldierId;
-      LogManager.info(`${soldierId} 购买成功`);
-      SoldierManager.getInstance().addSoldier(_formation,FormationEnum.Self);
+      const _formation = this._userData.formation.find(o => o.fighterId === undefined);
+      _formation.fighterId = fighterId;
+      LogManager.info(`${fighterId} 购买成功`);
+      FighterManager.getInstance().addFighter(_formation,FormationEnum.Self);
       this.savePlayerInfo();
       return true;
     } else {
@@ -69,7 +69,7 @@ export class PlayerData {
   /**
    * 获得购买角色的价格
    */
-  public getBuySoldierPrice() {
+  public getBuyFighterPrice() {
     let factor = 1.07;
     let sep = 13;
 
@@ -98,7 +98,7 @@ export class PlayerData {
         id: this._userData.formation.length + 1,
       };
       this._userData.formation.push(formation);
-      SoldierManager.getInstance().addCell(FormationEnum.Self);
+      FighterManager.getInstance().addCell(FormationEnum.Self);
       this.savePlayerInfo();
       LogManager.info('购买格子成功');
       return true;
@@ -110,7 +110,7 @@ export class PlayerData {
 
   // 更新在线奖励
   public updateOnlineReward(times: number): void {
-    this._userData.onlineReward += (Constants.ONLINE.PROFIT_PER_SECOND * this.getBuySoldierPrice() * times) / 1000;
+    this._userData.onlineReward += (Constants.ONLINE.PROFIT_PER_SECOND * this.getBuyFighterPrice() * times) / 1000;
     this._userData.onlineReward = Number(this._userData.onlineReward.toFixed(2));
     // LogManager.info(`在线奖励更新: ${this._userData.onlineReward}`);
     EventManager.emit(EventName.ONLINE_REWARD_UPDATE, this._userData.onlineReward);

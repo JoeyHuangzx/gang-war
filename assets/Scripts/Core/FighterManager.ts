@@ -1,25 +1,25 @@
 import { _decorator, instantiate, Node, Prefab, SpriteFrame, Texture2D } from 'cc';
 import { ResourceManager } from './ResourceManager';
 import { GridManager } from '../Logic/Map/GridManager';
-import { Soldier } from '../Logic/Soldiers/Soldier';
+import { FighterContainer } from '../Logic/Fighters/FighterContainer';
 import { GameManager } from './GameManager';
 import { Cell } from '../Logic/Map/Cell';
 import { PlayerData } from './PlayerData';
 import { Formation, UserData } from '../Net/NetApi';
-import { DataManager } from './DataManager';
 import { FormationEnum } from '../Global/FormationEnum';
 import { LogManager } from './LogManager';
+import { LevelManager } from './LevelManager';
 
 const { ccclass, property } = _decorator;
 
-export class SoldierManager {
-  private static _instance: SoldierManager;
+export class FighterManager {
+  private static _instance: FighterManager;
 
   private constructor() {}
 
-  public static getInstance(): SoldierManager {
+  public static getInstance(): FighterManager {
     if (!this._instance) {
-      this._instance = new SoldierManager();
+      this._instance = new FighterManager();
     }
     return this._instance;
   }
@@ -32,15 +32,15 @@ export class SoldierManager {
     this.gridManager = GameManager.getInstance().gridManager;
     this.userData = PlayerData.getInstance().UserData;
     this.initFormation(this.userData.formation, FormationEnum.Self);
-    this.initFormation(DataManager.getInstance().enemyFormation,FormationEnum.Enemy);
+    this.initFormation(LevelManager.getInstance().enemyFormation,FormationEnum.Enemy);
   }
 
   initFormation(_formation: Formation[],_formationType:FormationEnum){
     this.gridManager.generateGrids(_formation.length, _formationType);
     _formation.forEach(item => {
       let _soldierPrefabName = '';
-      if (item.soldierId) {
-        _soldierPrefabName = DataManager.getInstance().getFighterData(item.soldierId).prefabName;
+      if (item.fighterId) {
+        _soldierPrefabName = LevelManager.getInstance().getFighterData(item.fighterId).prefabName;
       }
       this.loadSoldier(item.id, _soldierPrefabName, _formationType);
     });
@@ -53,8 +53,8 @@ export class SoldierManager {
     GameManager.getInstance().gridManager.generateGrids(1,_formationType);
   }
 
-  public addSoldier(formation: Formation, _formationType: FormationEnum) {
-    const _soldierPrefabName = DataManager.getInstance().getFighterData(formation.soldierId).prefabName;
+  public addFighter(formation: Formation, _formationType: FormationEnum) {
+    const _soldierPrefabName = LevelManager.getInstance().getFighterData(formation.fighterId).prefabName;
     this.loadSoldier(formation.id, _soldierPrefabName, _formationType);
   }
 
@@ -73,7 +73,7 @@ export class SoldierManager {
     baseNode.setPosition(gridNode.position);
     if (soldierPrefabName !== '') {
       const modelPrefab = await ResourceManager.getInstance().load(`prefabs/model/man/${soldierPrefabName}`, Prefab);
-      baseNode.getComponent(Soldier).initData(modelPrefab);
+      baseNode.getComponent(FighterContainer).initData(modelPrefab);
       gridNode.getComponent(Cell).showEffect();
     }
   }

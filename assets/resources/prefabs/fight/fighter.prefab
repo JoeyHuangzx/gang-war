@@ -361,7 +361,7 @@
     "nestedPrefabInstanceRoots": null
   },
   {
-    "__type__": "db444zans9PA4S+7wrcTUfR",
+    "__type__": "e76566EdO5KZbMtC0+/hlhf",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -382,7 +382,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "f7/Ole0hFAULto2Xo1KzJV"
+    "fileId": "5f0wxwzQVLEZhHn7cHJaH1"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -393,6 +393,7 @@
       "__id__": 0
     },
     "fileId": "52kTUhTjFJO611WGGgUxlC",
+    "instance": null,
     "targetOverrides": []
   }
 ]
