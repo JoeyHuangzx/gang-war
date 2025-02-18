@@ -12,6 +12,12 @@ import { LevelManager } from './LevelManager';
 
 const { ccclass, property } = _decorator;
 
+/**
+ * 士兵管理类
+ * //TODO  获取被击中的对方士兵和它附近的同组士兵
+ * //TODO  获取距离士兵最近的对方士兵
+ * //TODO  主界面战士拖动/升级逻辑
+ */
 export class FighterManager {
   private static _instance: FighterManager;
 
