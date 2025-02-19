@@ -1,6 +1,6 @@
 import { _decorator, Component, Node, Quat, Tween, tween, Vec3 } from 'cc';
 import { LogManager } from '../Core/LogManager';
-import { Quaternion } from '../Utils/Quaternion';
+import { Quaternion } from '../Common/Utils/Quaternion';
 const { ccclass, property } = _decorator;
 
 @ccclass('Camera')

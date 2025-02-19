@@ -2,6 +2,8 @@ import { _decorator, Component, director, EventKeyboard, input, Input, instantia
 import { ResourceManager } from '../Core/ResourceManager';
 import { FighterModel } from '../Logic/Fighters/FighterModel';
 import { FormationEnum } from '../Global/FormationEnum';
+import { PoolManager } from '../Logic/Pools/PoolManager';
+import { Profiler } from '../Common/Profile/Profile';
 const { ccclass, property } = _decorator;
 
 @ccclass('ModelTest')
@@ -12,6 +14,16 @@ export class ModelTest extends Component {
   }
 
   async testModel() {
+    const mgr=ResourceManager.getInstance();
+    Profiler.start('init_pool');
+    const prefabs=await Promise.all([mgr.load(`prefabs/model/man/axe`, Prefab),mgr.load(`prefabs/model/man/altman01`, Prefab),mgr.load(`prefabs/fight/fighter`, Prefab)]);
+    // const modelPrefab = await ResourceManager.getInstance().load(`prefabs/model/man/axe`, Prefab);
+    for (let i = 0; i < prefabs.length; i++) {
+      PoolManager.getInstance().initPool(prefabs[i].name, prefabs[i], 3, 10);
+      
+    }
+    Profiler.end('init_pool');
+    return;
     for (let i = 0; i < 6; i++) {
       const solider: FighterModel = await this.createMode(
         'fighter',
@@ -23,13 +35,13 @@ export class ModelTest extends Component {
         solider.formation = FormationEnum.Enemy;
       }
     }
-    const soliders = director.getScene().children.filter(node => node.name == 'fighter');
-    for (let i = 0; i < soliders.length; i++) {
-      const solider: FighterModel = soliders[i].getComponent(FighterModel);
+    const fighters = director.getScene().children.filter(node => node.name == 'fighter');
+    for (let i = 0; i < fighters.length; i++) {
+      const solider: FighterModel = fighters[i].getComponent(FighterModel);
       if (solider.formation === FormationEnum.Enemy) {
-        solider.enemies = soliders.filter(node => node.getComponent(FighterModel).formation === FormationEnum.Self);
+        solider.enemies = fighters.filter(node => node.getComponent(FighterModel).formation === FormationEnum.Self);
       } else {
-        solider.enemies = soliders.filter(node => node.getComponent(FighterModel).formation === FormationEnum.Enemy);
+        solider.enemies = fighters.filter(node => node.getComponent(FighterModel).formation === FormationEnum.Enemy);
       }
       // solider.findClosestEnemy();
     }
@@ -38,8 +50,8 @@ export class ModelTest extends Component {
   onKeyDown(event: EventKeyboard) {
     switch (event.keyCode) {
       case KeyCode.SPACE:
-        const soliders = director.getScene().children.filter(node => node.name == 'fighter');
-        soliders.forEach(solider => {
+        const fighters = director.getScene().children.filter(node => node.name == 'fighter');
+        fighters.forEach(solider => {
           solider.getComponent(FighterModel).findClosestEnemy();
         });
         break;

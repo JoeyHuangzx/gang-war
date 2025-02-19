@@ -1,7 +1,6 @@
-
-
-import { Asset, assetManager, resources, SpriteFrame, Texture2D } from "cc";
-import { LogManager } from "./LogManager";
+import { Asset, assetManager, resources, SpriteFrame, Texture2D } from 'cc';
+import { LogManager } from './LogManager';
+import { Profiler } from '../Common/Profile/Profile';
 
 // 使用示例
 /* const resourceManager = ResourceManager.instance;
@@ -32,13 +31,13 @@ resourceManager.clear(); */
 
 export class ResourceManager {
   private static _instance: ResourceManager;
-  private cache: Map<string, { refCount: number, asset: any }> = new Map();
+  private cache: Map<string, { refCount: number; asset: any }> = new Map();
 
   public static getInstance(): ResourceManager {
-      if (!this._instance) {
-          this._instance = new ResourceManager();
-      }
-      return this._instance;
+    if (!this._instance) {
+      this._instance = new ResourceManager();
+    }
+    return this._instance;
   }
 
   /**
@@ -47,24 +46,26 @@ export class ResourceManager {
    * @param type 指定资源类型（仅远程资源有效）
    */
   public async load<T extends typeof Asset>(path: string, type?: T): Promise<InstanceType<T>> {
-      if (this.cache.has(path)) {
-          const entry = this.cache.get(path)!;
-          entry.refCount++;
-          return entry.asset as InstanceType<T>;
-      }
+    Profiler.start('ResourceManager.load_'+path);
+    if (this.cache.has(path)) {
+      const entry = this.cache.get(path)!;
+      entry.refCount++;
+      Profiler.end('ResourceManager.load_'+path);
+      return entry.asset as InstanceType<T>;
+    }
 
-      try {
-          const asset = await (this.isRemotePath(path) 
-              ? this.loadRemote(path, type) 
-              : this.loadLocal(path));
+    try {
+      const asset = await (this.isRemotePath(path) ? this.loadRemote(path, type) : this.loadLocal(path));
 
-          this.cache.set(path, { refCount: 1, asset });
-          LogManager.info(`Resource loaded success: ${path}`);
-          return asset as InstanceType<T>;
-      } catch (error) {
-          LogManager.error(`Failed to load resource: ${path}`, error);
-          throw error;
-      }
+      this.cache.set(path, { refCount: 1, asset });
+      Profiler.end('ResourceManager.load_'+path);
+      LogManager.info(`Resource loaded success: ${path}`);
+      return asset as InstanceType<T>;
+    } catch (error) {
+      LogManager.error(`Failed to load resource: ${path}`, error);
+      Profiler.end('ResourceManager.load_'+path);
+      throw error;
+    }
   }
 
   /**
@@ -72,7 +73,7 @@ export class ResourceManager {
    * @param paths 资源路径数组
    */
   public async loadAll(paths: string[]): Promise<any[]> {
-      return Promise.all(paths.map(p => this.load(p)));
+    return Promise.all(paths.map(p => this.load(p)));
   }
 
   /**
@@ -80,17 +81,17 @@ export class ResourceManager {
    * @param path 资源路径或URL
    */
   public release(path: string): void {
-      if (!this.cache.has(path)) {
-          LogManager.warn(`Resource not loaded: ${path}`);
-          return;
-      }
+    if (!this.cache.has(path)) {
+      LogManager.warn(`Resource not loaded: ${path}`);
+      return;
+    }
 
-      const entry = this.cache.get(path)!;
-      if (--entry.refCount <= 0) {
-          assetManager.releaseAsset(entry.asset);
-          this.cache.delete(path);
-          LogManager.info(`Resource released: ${path}`);
-      }
+    const entry = this.cache.get(path)!;
+    if (--entry.refCount <= 0) {
+      assetManager.releaseAsset(entry.asset);
+      this.cache.delete(path);
+      LogManager.info(`Resource released: ${path}`);
+    }
   }
 
   /**
@@ -98,51 +99,47 @@ export class ResourceManager {
    * @param paths 资源路径数组
    */
   public releaseAll(paths: string[]): void {
-      paths.forEach(p => this.release(p));
+    paths.forEach(p => this.release(p));
   }
 
   /**
    * 清空所有缓存资源
    */
   public clear(): void {
-      this.cache.forEach((value, key) => {
-          assetManager.releaseAsset(value.asset);
-      });
-      this.cache.clear();
-      LogManager.info("All resources cleared");
+    this.cache.forEach((value, key) => {
+      assetManager.releaseAsset(value.asset);
+    });
+    this.cache.clear();
+    LogManager.info('All resources cleared');
   }
 
   private isRemotePath(path: string): boolean {
-      return path.startsWith("http://") || path.startsWith("https://");
+    return path.startsWith('http://') || path.startsWith('https://');
   }
 
   private loadLocal<T extends typeof Asset>(path: string): Promise<InstanceType<T>> {
-      return new Promise((resolve, reject) => {
-          resources.load(path, (err: Error, asset: InstanceType<T>) => {
-              err ? reject(err) : resolve(asset);
-          });
+    return new Promise((resolve, reject) => {
+      resources.load(path, (err: Error, asset: InstanceType<T>) => {
+        err ? reject(err) : resolve(asset);
       });
+    });
   }
 
-  private loadRemote<T extends typeof Asset>(
-      url: string,
-      type?: T
-  ): Promise<InstanceType<T>> {
-      return new Promise((resolve, reject) => {
-          assetManager.loadRemote(url, { type: type?.name }, (err, asset) => {
-              if (err) return reject(err);
+  private loadRemote<T extends typeof Asset>(url: string, type?: T): Promise<InstanceType<T>> {
+    return new Promise((resolve, reject) => {
+      assetManager.loadRemote(url, { type: type?.name }, (err, asset) => {
+        if (err) return reject(err);
 
-              // 处理图片资源自动转换为Texture2D
-              if (asset instanceof Texture2D) {
-                  const spriteFrame = new SpriteFrame();
-                  spriteFrame.texture=asset;
-                  spriteFrame.addRef();
-                  resolve(spriteFrame as InstanceType<T>);
-              } else {
-                  resolve(asset as InstanceType<T>);
-              }
-          });
+        // 处理图片资源自动转换为Texture2D
+        if (asset instanceof Texture2D) {
+          const spriteFrame = new SpriteFrame();
+          spriteFrame.texture = asset;
+          spriteFrame.addRef();
+          resolve(spriteFrame as InstanceType<T>);
+        } else {
+          resolve(asset as InstanceType<T>);
+        }
       });
+    });
   }
 }
-

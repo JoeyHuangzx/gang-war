@@ -1,25 +1,27 @@
-// ObjectPoolManager.ts
-import { _decorator, Node, instantiate, director } from 'cc';
+// PoolManager.ts
+import { _decorator, Node, instantiate, director, Prefab } from 'cc';
 const { ccclass } = _decorator;
 
 type PoolInfo = {
-    prefab: Node;
+    prefab: Prefab;
     activeNodes: Set<Node>;
     inactiveNodes: Node[];
     maxSize: number;
 };
 
-@ccclass('ObjectPoolManager')
-export class ObjectPoolManager {
-    private static _instance: ObjectPoolManager;
+@ccclass('PoolManager')
+export class PoolManager {
+    private static _instance: PoolManager;
     private _pools: Map<string, PoolInfo> = new Map();
     private _poolRoot: Node;
 
-    public static get instance(): ObjectPoolManager {
+    public static getInstance(): PoolManager {
         if (!this._instance) {
-            this._instance = new ObjectPoolManager();
+            this._instance = new PoolManager();
             this._instance._poolRoot = new Node('ObjectPoolRoot');
+            
             director.getScene()?.addChild(this._instance._poolRoot);
+            director.addPersistRootNode(this._instance._poolRoot);
         }
         return this._instance;
     }
@@ -31,7 +33,7 @@ export class ObjectPoolManager {
      * @param initSize 初始数量
      * @param maxSize 最大容量（0表示无限制）
      */
-    initPool(poolName: string, prefab: Node, initSize: number = 10, maxSize: number = 0): void {
+    initPool(poolName: string, prefab: Prefab, initSize: number = 10, maxSize: number = 0): void {
         if (!this._pools.has(poolName)) {
             const pool: PoolInfo = {
                 prefab,

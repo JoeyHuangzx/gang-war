@@ -2,7 +2,7 @@ import { _decorator, Component,  input, Input, KeyCode, Node, SkeletalAnimation,
 import { FighterAnimationEnum } from './FighterAnimationEnum';
 import { LogManager } from '../../Core/LogManager';
 import { FormationEnum } from '../../Global/FormationEnum';
-import { Quaternion } from '../../Utils/Quaternion';
+import { Quaternion } from '../../Common/Utils/Quaternion';
 const { ccclass, property } = _decorator;
 
 @ccclass('FighterModel')
@@ -13,9 +13,6 @@ export class FighterModel extends Component {
   @property
   moveSpeed: number = 3; // 移动速度
   @property(Number) private attackRange: number = 2; // 攻击范围
-  private moveDirection: Vec3 = new Vec3(0, 0, 0);
-  private isMovement: boolean = false;
-
   public enemies: Node[] = []; // 敌方小兵列表
   private targetEnemy: Node | null = null; // 当前目标敌人
   private isAttacking: boolean = false; // 是否在攻击
@@ -27,10 +24,6 @@ export class FighterModel extends Component {
     this.skeletalAnimation.on(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
     //测试动画播放
     this.playAnimation(FighterAnimationEnum.Idle);
-    this.moveDirection = this.node.forward.multiplyScalar(-1);
-    input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
-    input.on(Input.EventType.KEY_PRESSING, this.onKeyDown, this);
-    input.on(Input.EventType.KEY_UP, this.onkeyUp, this);
     this.node.setScale(new Vec3(0.5,0.5,0.5));
     if(this.formation === FormationEnum.Enemy){
       this.node.setWorldRotation(Quaternion.GetQuatFromAngle(new Vec3(0,270,0)));
@@ -38,36 +31,9 @@ export class FighterModel extends Component {
     
   }
 
-  private onKeyDown(event: any) {
-    switch (event.keyCode) {
-      case KeyCode.KEY_Q:
-        this.isMovement = true;
-        break;
-      case KeyCode.KEY_R:
-        this.node.setWorldPosition(-10, 0, 0);
-        this.isMovement = true;
-        break;
-    }
-  }
-
-  private onkeyUp(event: any) {
-    this.isMovement = false;
-    this.playAnimation(FighterAnimationEnum.Idle);
-  }
 
   update(deltaTime: number) {
     this.ticker += deltaTime;
-    /* if (this.moveDirection.length() > 0 && this.isMovement) {
-      this.playAnimation(SoldierAnimationEnum.Run);
-      const moveStep = this.moveDirection.normalize().multiplyScalar(this.moveSpeed * deltaTime);
-      const worldPos = this.node.position.add(moveStep);
-      LogManager.debug(`move to:${worldPos.x},${worldPos.z}`);
-      this.node.setWorldPosition(worldPos);
-    } 
-    if (this.ticker > this.findEnemyDt) {
-      this.ticker = 0;
-      this.findClosestEnemy();
-    }*/
     if (this.isAttacking || !this.targetEnemy) return;
 
     const myPos = this.node.position;

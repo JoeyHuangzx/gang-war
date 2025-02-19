@@ -1,7 +1,7 @@
 import { _decorator, instantiate, Node, Prefab, SpriteFrame, Texture2D } from 'cc';
 import { ResourceManager } from './ResourceManager';
 import { GridManager } from '../Logic/Map/GridManager';
-import { FighterContainer } from '../Logic/Fighters/FighterContainer';
+import { Fighter } from '../Logic/Fighters/Fighter';
 import { GameManager } from './GameManager';
 import { Cell } from '../Logic/Map/Cell';
 import { PlayerData } from './PlayerData';
@@ -9,6 +9,8 @@ import { Formation, UserData } from '../Net/NetApi';
 import { FormationEnum } from '../Global/FormationEnum';
 import { LogManager } from './LogManager';
 import { LevelManager } from './LevelManager';
+import { Constants } from '../Global/Constants';
+import { PoolManager } from '../Logic/Pools/PoolManager';
 
 const { ccclass, property } = _decorator;
 
@@ -38,10 +40,10 @@ export class FighterManager {
     this.gridManager = GameManager.getInstance().gridManager;
     this.userData = PlayerData.getInstance().UserData;
     this.initFormation(this.userData.formation, FormationEnum.Self);
-    this.initFormation(LevelManager.getInstance().enemyFormation,FormationEnum.Enemy);
+    this.initFormation(LevelManager.getInstance().enemyFormation, FormationEnum.Enemy);
   }
 
-  initFormation(_formation: Formation[],_formationType:FormationEnum){
+  initFormation(_formation: Formation[], _formationType: FormationEnum) {
     this.gridManager.generateGrids(_formation.length, _formationType);
     _formation.forEach(item => {
       let _soldierPrefabName = '';
@@ -56,7 +58,7 @@ export class FighterManager {
    * 新增阵容（格子）
    */
   public addCell(_formationType: FormationEnum) {
-    GameManager.getInstance().gridManager.generateGrids(1,_formationType);
+    GameManager.getInstance().gridManager.generateGrids(1, _formationType);
   }
 
   public addFighter(formation: Formation, _formationType: FormationEnum) {
@@ -67,19 +69,22 @@ export class FighterManager {
   // 加载士兵
   public async loadSoldier(pos: number, soldierPrefabName: string, _formationType: FormationEnum) {
     // 士兵底座
-    const basePrefab = await ResourceManager.getInstance().load('prefabs/fight/fighter', Prefab);
+    // const basePrefab = await ResourceManager.getInstance().load(Constants.PREFAB_PATH.FIGHTER, Prefab);
     const grids = _formationType === FormationEnum.Self ? this.gridManager.gridMap : this.gridManager.enemyGridMap;
-    if(!grids.has(pos)) {
+    if (!grids.has(pos)) {
       LogManager.error(`找不到格子:${pos},format:${_formationType}`);
       return;
     }
     const gridNode = grids.get(pos);
-    const baseNode = instantiate(basePrefab);
+    const baseNode = PoolManager.getInstance().get(Constants.PREFAB_NAME.FIGHTER); //instantiate(basePrefab);
     GameManager.getInstance().gameNode.addChild(baseNode);
     baseNode.setPosition(gridNode.position);
     if (soldierPrefabName !== '') {
-      const modelPrefab = await ResourceManager.getInstance().load(`prefabs/model/man/${soldierPrefabName}`, Prefab);
-      baseNode.getComponent(FighterContainer).initData(modelPrefab);
+      /* const modelPrefab = await ResourceManager.getInstance().load(
+        `${Constants.PREFAB_PATH.FIGHTER_MODEL_DIR}${soldierPrefabName}`,
+        Prefab,
+      ); */
+      baseNode.getComponent(Fighter).initData(soldierPrefabName);
       gridNode.getComponent(Cell).showEffect();
     }
   }

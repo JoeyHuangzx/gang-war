@@ -1,9 +1,9 @@
 // CustomPool.ts
-import { _decorator, Node, instantiate, director } from 'cc';
+import { _decorator, Node, instantiate, director, Prefab } from 'cc';
 const { ccclass } = _decorator;
 
 type PoolConfig = {
-    prefab: Node;
+    prefab: Prefab;
     initSize?: number;
     maxSize?: number;
     createCallback?: (node: Node) => void;
