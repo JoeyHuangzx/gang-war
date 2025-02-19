@@ -169,23 +169,23 @@
       ],
       "subMetas": {}
     },
-    "13b72": {
+    "1e5ef": {
       "importer": "gltf-embeded-image",
-      "uuid": "502b4d03-a036-48c7-bb74-667654db2940@13b72",
+      "uuid": "502b4d03-a036-48c7-bb74-667654db2940@1e5ef",
       "displayName": "",
-      "id": "13b72",
-      "name": "catapult02.jpg.image",
+      "id": "1e5ef",
+      "name": "贴图 #10.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
-        "hasAlpha": false,
+        "hasAlpha": true,
         "type": "texture"
       },
       "ver": "1.0.3",
       "imported": true,
       "files": [
-        ".jpg",
-        ".json"
+        ".json",
+        ".png"
       ],
       "subMetas": {}
     },
@@ -203,7 +203,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "502b4d03-a036-48c7-bb74-667654db2940@13b72"
+        "imageUuidOrDatabaseUri": "502b4d03-a036-48c7-bb74-667654db2940@1e5ef"
       },
       "ver": "1.0.22",
       "imported": true,
@@ -248,8 +248,8 @@
   "userData": {
     "imageMetas": [
       {
-        "name": "catapult02.jpg",
-        "uri": "502b4d03-a036-48c7-bb74-667654db2940@13b72"
+        "name": "贴图 #10",
+        "uri": "502b4d03-a036-48c7-bb74-667654db2940@1e5ef"
       }
     ],
     "animationImportSettings": [

@@ -22,3 +22,9 @@ node_modules/
 # WebStorm
 #//////////////////////////
 .idea/
+assets/res/effect/fireBall01/meteorite01.FBX.meta
+assets/res/model/altman/altman01.FBX.meta
+assets/res/model/axe/axe01.FBX.meta
+assets/res/model/catapult/catapult01.FBX.meta
+assets/res/model/clown/clown01.FBX.meta
+assets/res/model/soldier/soldier01.FBX.meta

@@ -185,23 +185,23 @@
       ],
       "subMetas": {}
     },
-    "76cfb": {
+    "181cb": {
       "importer": "gltf-embeded-image",
-      "uuid": "9445909f-4879-4c2b-8bc3-a48e7015a2ba@76cfb",
+      "uuid": "9445909f-4879-4c2b-8bc3-a48e7015a2ba@181cb",
       "displayName": "",
-      "id": "76cfb",
-      "name": "clown01.jpg.image",
+      "id": "181cb",
+      "name": "贴图 #4.image",
       "userData": {
         "gltfIndex": 0,
         "fixAlphaTransparencyArtifacts": true,
-        "hasAlpha": false,
+        "hasAlpha": true,
         "type": "texture"
       },
       "ver": "1.0.3",
       "imported": true,
       "files": [
-        ".jpg",
-        ".json"
+        ".json",
+        ".png"
       ],
       "subMetas": {}
     },
@@ -219,7 +219,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "9445909f-4879-4c2b-8bc3-a48e7015a2ba@76cfb"
+        "imageUuidOrDatabaseUri": "9445909f-4879-4c2b-8bc3-a48e7015a2ba@181cb"
       },
       "ver": "1.0.22",
       "imported": true,
@@ -248,8 +248,8 @@
   "userData": {
     "imageMetas": [
       {
-        "name": "clown01.jpg",
-        "uri": "9445909f-4879-4c2b-8bc3-a48e7015a2ba@76cfb"
+        "name": "贴图 #4",
+        "uri": "9445909f-4879-4c2b-8bc3-a48e7015a2ba@181cb"
       }
     ],
     "animationImportSettings": [
