@@ -1,4 +1,8 @@
 export class Constants {
+  public static GAME_TEST = {
+    isGaming: false,
+  };
+
   public static BASE_URL = 'http://localhost:3000';
 
   public static BASE_FIGHTER = 101;

@@ -378,6 +378,8 @@
     "modelParent": {
       "__id__": 11
     },
+    "moveSpeed": 3,
+    "attackRange": 1,
     "_id": ""
   },
   {

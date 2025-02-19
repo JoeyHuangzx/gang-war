@@ -3,7 +3,7 @@ import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
 import { LogManager } from '../../Core/LogManager';
 import { GameManager } from '../../Core/GameManager';
-import { FormationEnum } from '../../Global/FormationEnum';
+import { FighterTypeEnum } from '../../Global/FighterTypeEnum';
 
 const { ccclass, property } = _decorator;
 
@@ -15,7 +15,7 @@ export class GridManager extends Component {
   private basePosition: Vec3 = new Vec3(-10, 0, 0); // 初始位置（最下方中间）
   public gridMap: Map<number, Node> = new Map(); // 存储所有格子节点
   public enemyGridMap: Map<number, Node> = new Map(); // 存储所有敌方阵容的节点
-  private formationType: FormationEnum = null;
+  private formationType: FighterTypeEnum = null;
 
   start() {
     // EventManager.on(EventName.ADD_GRID, this.addGrid, this);
@@ -32,13 +32,13 @@ export class GridManager extends Component {
       width = 4;
       height = 5;
       baseIndex = index - 9;
-      this.basePosition = new Vec3(this.formationType === FormationEnum.Enemy ? 14.5 : -14.5, 0, 0);
+      this.basePosition = new Vec3(this.formationType === FighterTypeEnum.Enemy ? 14.5 : -14.5, 0, 0);
     }
     if (index >= 50) {
       width = 5;
       height = Math.ceil(index / width);
       baseIndex = index - 50;
-      this.basePosition = new Vec3(this.formationType === FormationEnum.Enemy ? 20 : -20, 0, 0);
+      this.basePosition = new Vec3(this.formationType === FighterTypeEnum.Enemy ? 20 : -20, 0, 0);
     }
 
     layer = Math.floor(baseIndex / height);
@@ -77,25 +77,24 @@ export class GridManager extends Component {
   }
 
   /** 生成格子 */
-  generateGrids(count: number, _formationType: FormationEnum) {
+  generateGrids(count: number, _formationType: FighterTypeEnum) {
     if (!this.gridPrefab || !GameManager.getInstance().gameNode) {
       LogManager.error('gridPrefab or parent is null');
       return;
     }
     this.formationType = _formationType;
-    this.basePosition = new Vec3(this.formationType === FormationEnum.Enemy ? 10 : -10, 0, 0);
-    
+    this.basePosition = new Vec3(this.formationType === FighterTypeEnum.Enemy ? 10 : -10, 0, 0);
+
     for (let i = 0; i < count; i++) {
       let gridNode = instantiate(this.gridPrefab);
-      const len = this.formationType === FormationEnum.Enemy ? this.enemyGridMap.size : this.gridMap.size;
+      const len = this.formationType === FighterTypeEnum.Enemy ? this.enemyGridMap.size : this.gridMap.size;
       gridNode.setPosition(this.getGridPosition(len));
       GameManager.getInstance().gameNode.addChild(gridNode);
-      this.formationType === FormationEnum.Enemy
-        ? this.enemyGridMap.set(len+1, gridNode)
-        : this.gridMap.set(len+1, gridNode);
+      this.formationType === FighterTypeEnum.Enemy
+        ? this.enemyGridMap.set(len + 1, gridNode)
+        : this.gridMap.set(len + 1, gridNode);
     }
   }
-
 
   protected onDestroy(): void {
     // EventManager.off(EventName.ADD_GRID, this.addGrid);

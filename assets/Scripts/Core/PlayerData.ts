@@ -1,6 +1,6 @@
 import { Constants } from '../Global/Constants';
 import { EventName } from '../Global/EventName';
-import { FormationEnum } from '../Global/FormationEnum';
+import { FighterTypeEnum } from '../Global/FighterTypeEnum';
 import HttpClient from '../Net/HttpClient';
 import { UserData } from '../Net/NetApi';
 import { EventManager } from './EventManager';
@@ -57,7 +57,7 @@ export class PlayerData {
       const _formation = this._userData.formation.find(o => o.fighterId === undefined);
       _formation.fighterId = fighterId;
       LogManager.info(`${fighterId} 购买成功`);
-      FighterManager.getInstance().addFighter(_formation,FormationEnum.Self);
+      FighterManager.getInstance().addFighter(_formation, FighterTypeEnum.Self);
       this.savePlayerInfo();
       return true;
     } else {
@@ -98,7 +98,7 @@ export class PlayerData {
         id: this._userData.formation.length + 1,
       };
       this._userData.formation.push(formation);
-      FighterManager.getInstance().addCell(FormationEnum.Self);
+      FighterManager.getInstance().addCell(FighterTypeEnum.Self);
       this.savePlayerInfo();
       LogManager.info('购买格子成功');
       return true;
