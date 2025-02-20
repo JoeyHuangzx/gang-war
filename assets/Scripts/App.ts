@@ -1,4 +1,4 @@
-import { _decorator, Component, director, EditBox, Node } from 'cc';
+import { _decorator, Component, director, EditBox, Node, PhysicsSystem } from 'cc';
 import { GameManager } from './Core/GameManager';
 import { LogManager } from './Core/LogManager';
 import { LevelManager } from './Core/LevelManager';
@@ -9,7 +9,7 @@ export class App extends Component {
   start() {
     //常驻节点
     director.addPersistRootNode(this.node);
-
+    PhysicsSystem.instance.enable = true;
     //预加载场景
     this.preLoad();
   }
@@ -17,8 +17,8 @@ export class App extends Component {
   preLoad() {
     LevelManager.getInstance().loadData();
     GameManager.getInstance().initPool();
-    director.preloadScene('main', () => {
-      LogManager.info('预加载 main 场景完成');
-    });
+    // director.preloadScene('main', () => {
+    //   LogManager.info('预加载 main 场景完成');
+    // });
   }
 }

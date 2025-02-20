@@ -8,5 +8,22 @@
       "height": 1334
     }
   },
-  "custom_joint_texture_layouts": []
+  "custom_joint_texture_layouts": [],
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "player"
+      },
+      {
+        "index": 2,
+        "name": "enemy"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 1,
+      "1": 6,
+      "2": 6
+    }
+  }
 }

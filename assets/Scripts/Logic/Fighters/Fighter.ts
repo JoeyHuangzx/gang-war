@@ -72,6 +72,11 @@ export class Fighter extends Component {
     }
   }
 
+  gameStart() {
+    this.shadow.active = false;
+    this.findEnemy();
+  }
+
   findEnemy() {
     this.scheduleOnce(() => {
       this.isAttacking = false;

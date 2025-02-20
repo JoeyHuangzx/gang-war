@@ -96,7 +96,7 @@ export class FighterManager {
   gameStart() {
     this.fighterMap.forEach(item => {
       item.forEach(fighter => {
-        fighter.findEnemy();
+        fighter.gameStart();
       });
     });
   }
