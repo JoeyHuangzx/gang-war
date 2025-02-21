@@ -8,6 +8,7 @@ import { ResourceManager } from './ResourceManager';
 import { Profiler } from '../Common/Profile/Profile';
 import { Constants } from '../Global/Constants';
 import { PoolConfig } from '../Datas/PoolConfig';
+import { LogManager } from './LogManager';
 
 export class GameManager {
   private static _instance: GameManager;
@@ -31,8 +32,12 @@ export class GameManager {
     // 初始化关卡管理器
     // 初始化兵种管理器
     this.gridManager = find('newMap01')?.getComponent(GridManager);
-    FighterManager.getInstance().initData();
-    this.startOnlineReward();
+    if (this.gridManager) {
+      FighterManager.getInstance().initData();
+      this.startOnlineReward();
+    } else {
+      LogManager.error('未找到地图');
+    }
   }
 
   async initPool() {
