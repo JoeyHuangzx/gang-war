@@ -9,6 +9,8 @@ import { Profiler } from '../Common/Profile/Profile';
 import { Constants } from '../Global/Constants';
 import { PoolConfig } from '../Datas/PoolConfig';
 import { LogManager } from './LogManager';
+import { EventManager } from './EventManager';
+import { EventName } from '../Global/EventName';
 
 export class GameManager {
   private static _instance: GameManager;
@@ -38,6 +40,7 @@ export class GameManager {
     } else {
       LogManager.error('未找到地图');
     }
+    EventManager.on(EventName.GAME_RESET, this.resetGame, this);
   }
 
   async initPool() {
@@ -59,7 +62,7 @@ export class GameManager {
     }, 1000);
   }
 
-  startGame() {
+  resetGame() {
     // 开始游戏逻辑
   }
 

@@ -8,6 +8,10 @@ import { FighterAnimationEnum } from './FighterAnimationEnum';
 import { FighterData } from '../../Datas/CsvConfig';
 import { LogManager } from '../../Core/LogManager';
 import { FighterManager } from '../../Core/FighterManager';
+import { ResourceManager } from '../../Core/ResourceManager';
+import { Effect } from '../Effects/Effect';
+import { EventManager } from '../../Core/EventManager';
+import { EventName } from '../../Global/EventName';
 const { ccclass, property } = _decorator;
 
 /**
@@ -25,8 +29,10 @@ export class Fighter extends Component {
 
   @property
   moveSpeed: number = 3; // 移动速度
-  @property(Number) private attackRange: number = 2; // 攻击范围
+  @property
+  private attackRange: number = 2; // 攻击范围
 
+  private _hp: number = 0;
   private _damage: number = 0;
   public enemies: Node[] = []; // 敌方小兵列表
   private targetEnemy: Fighter | null = null; // 当前目标敌人
@@ -44,6 +50,7 @@ export class Fighter extends Component {
     this.fighterData = fighterData;
     let model = PoolManager.getInstance().get(fighterData.prefabName); // instantiate(modelPrefab);
     model.name = fighterData.prefabName;
+    this._hp = fighterData.hp;
     this.modelParent.addChild(model);
     model.setPosition(0, 0, 0);
     this.fighterModel = this.modelParent.getComponentInChildren(FighterModel);
@@ -57,7 +64,6 @@ export class Fighter extends Component {
 
   update(deltaTime: number) {
     this.ticker += deltaTime;
-    // if (this.isAttacking || !this.targetEnemy) return;
     if (this.targetEnemy) {
       const myPos = this.node.position;
       const targetPos = this.targetEnemy.node.position;
@@ -81,6 +87,10 @@ export class Fighter extends Component {
     this.scheduleOnce(() => {
       this.isAttacking = false;
       this.targetEnemy = FighterManager.getInstance().findClosestEnemy(this); // 继续寻找新的目标
+      if (!this.targetEnemy) {
+        LogManager.debug('没有目标');
+        this.fighterModel.playAnimation(FighterAnimationEnum.Idle);
+      }
     }, 1); // 假设攻击间隔 1 秒
   }
 
@@ -97,28 +107,29 @@ export class Fighter extends Component {
     this.fighterModel.playAnimation(FighterAnimationEnum.Run);
   }
 
-  /** 计算最近的敌人 */
-  public findClosestEnemy(): void {
-    let closestEnemy: Node | null = null;
-    let minDistance = Infinity;
+  // /** 计算最近的敌人 */
+  // public findClosestEnemy(): void {
+  //   let closestEnemy: Node | null = null;
+  //   let minDistance = Infinity;
 
-    for (const enemy of this.enemies) {
-      const distance = Vec3.distance(this.node.position, enemy.position);
-      // LogManager.debug(`mid:${distance}`);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestEnemy = enemy;
-      }
-    }
+  //   for (const enemy of this.enemies) {
+  //     const distance = Vec3.distance(this.node.position, enemy.position);
+  //     // LogManager.debug(`mid:${distance}`);
+  //     if (distance < minDistance) {
+  //       minDistance = distance;
+  //       closestEnemy = enemy;
+  //     }
+  //   }
 
-    this.targetEnemy = closestEnemy.getComponent(Fighter);
-  }
+  //   this.targetEnemy = closestEnemy.getComponent(Fighter);
+  // }
 
   /** 进入攻击状态 */
   private startAttack(): void {
     if (this.isAttacking) return;
     this.isAttacking = true;
     LogManager.debug(`${this.node.name} 开始攻击 ${this.targetEnemy?.name}`);
+    this.attackEffect();
     if (this.targetEnemy) {
       // 这里可以添加攻击动画
       this.fighterModel.playAnimation(FighterAnimationEnum.Attack);
@@ -134,18 +145,50 @@ export class Fighter extends Component {
   public onDamage(_damage: number) {
     // 根据攻击力、攻击距离、攻击类型等因素计算伤害
     // 例如：攻击力 * 攻击距离 / 100
-    LogManager.debug(`${this.node.name} 受到 ${_damage} 点伤害`);
+    // LogManager.debug(`${this.node.name} 受到 ${_damage} 点伤害`);
+    this._hp -= _damage;
+    this._hp = Math.max(0, this._hp);
+    if (this._hp <= 0) {
+      this.die();
+    }
+  }
+
+  public async attackEffect() {
+    ResourceManager.getInstance()
+      .load(Constants.PREFAB_PATH.ATTACK_EFFECT, Prefab)
+      .then((_prefab: Prefab) => {
+        const attackEffect = instantiate(_prefab);
+        this.node.addChild(attackEffect);
+        attackEffect.setPosition(this.node.position);
+        attackEffect.getComponent(Effect).playEffect();
+      })
+      .catch(error => {
+        LogManager.error('加载攻击特效失败', error);
+      });
   }
 
   /**
    * 死亡
    */
   public async die(): Promise<void> {
+    if (this.fighterType !== FighterTypeEnum.Self) {
+      EventManager.emit(EventName.FIGHT_GOLD_UPDATE, this.fighterData.coin);
+    }
     this.fighterModel.playAnimation(FighterAnimationEnum.Dead);
     this.node.active = false;
     this.shadow.active = false;
+    FighterManager.getInstance().removeFighter(this);
     await this.fighterModel.waitForAnimationFinished(FighterAnimationEnum.Dead);
     PoolManager.getInstance().put(this.fighterModel.node.name, this.fighterModel.node);
     PoolManager.getInstance().put(Constants.PREFAB_NAME.FIGHTER, this.node);
+  }
+
+  resetData() {
+    this.targetEnemy = null;
+    this._hp = this.fighterData.hp;
+    this._damage = this.fighterData.attack;
+    this.node.active = true;
+    this.shadow.active = true;
+    this.fighterModel.playAnimation(FighterAnimationEnum.Idle);
   }
 }

@@ -28,6 +28,7 @@ export class Constants {
     FIGHTER: 'prefabs/fight/fighter',
     FIGHTER_MODEL_DIR: 'prefabs/model/man/',
     FIGHTER_EFFECT_01: 'prefabs/effect/upLoop01',
+    ATTACK_EFFECT: 'prefabs/effect/attack01',
   } as const;
 
   public static STORAGE_KEY = {

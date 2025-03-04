@@ -3,18 +3,19 @@
     "__type__": "cc.Prefab",
     "_name": "win01",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "_native": "",
     "data": {
       "__id__": 1
     },
     "optimizationPolicy": 0,
-    "asyncLoadAssets": false,
     "persistent": false
   },
   {
     "__type__": "cc.Node",
     "_name": "win01",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "_parent": null,
     "_children": [
       {
@@ -22,13 +23,9 @@
       }
     ],
     "_active": true,
-    "_components": [
-      {
-        "__id__": 55
-      }
-    ],
+    "_components": [],
     "_prefab": {
-      "__id__": 57
+      "__id__": 55
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -49,6 +46,7 @@
       "y": 1,
       "z": 1
     },
+    "_mobility": 0,
     "_layer": 1073741824,
     "_euler": {
       "__type__": "cc.Vec3",
@@ -62,6 +60,7 @@
     "__type__": "cc.Node",
     "_name": "win01",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "_parent": {
       "__id__": 1
     },
@@ -94,6 +93,7 @@
       "y": 1,
       "z": 1
     },
+    "_mobility": 0,
     "_layer": 1073741824,
     "_euler": {
       "__type__": "cc.Vec3",
@@ -107,6 +107,7 @@
     "__type__": "cc.ParticleSystem",
     "_name": "",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "node": {
       "__id__": 2
     },
@@ -174,6 +175,13 @@
       "__id__": 17
     },
     "bursts": [],
+    "_renderCulling": false,
+    "_cullingMode": 0,
+    "_aabbHalfX": 0,
+    "_aabbHalfY": 0,
+    "_aabbHalfZ": 0,
+    "_dataCulling": false,
+    "enableCulling": false,
     "_colorOverLifetimeModule": {
       "__id__": 18
     },
@@ -198,13 +206,13 @@
     "_textureAnimationModule": {
       "__id__": 45
     },
+    "_noiseModule": null,
     "_trailModule": {
       "__id__": 48
     },
     "renderer": {
       "__id__": 53
     },
-    "enableCulling": false,
     "_prewarm": false,
     "_capacity": 50,
     "_simulationSpace": 1,
@@ -665,11 +673,17 @@
     "_velocityScale": 1,
     "_lengthScale": 1,
     "_mesh": null,
+    "_cpuMaterial": {
+      "__uuid__": "4b52ba6e-0f68-4046-8623-43035aaf34ca",
+      "__expectedType__": "cc.Material"
+    },
+    "_gpuMaterial": null,
     "_mainTexture": {
       "__uuid__": "a75cf868-31da-4fd3-a38e-75c75fe1dcb9@6c48a",
       "__expectedType__": "cc.Texture2D"
     },
-    "_useGPU": false
+    "_useGPU": false,
+    "_alignSpace": 2
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -679,29 +693,10 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "780Q/mmvxO/p20GIuYGq/U"
-  },
-  {
-    "__type__": "07f78DYBgNKjKZNL1uL0JyA",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "__prefab": {
-      "__id__": 56
-    },
-    "effectType": 1,
-    "ani": null,
-    "keepTime": 2,
-    "autoDestroy": false,
-    "playOnStart": true,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.CompPrefabInfo",
-    "fileId": "8faQUDfvJOKYLG+7qNh+a0"
+    "fileId": "780Q/mmvxO/p20GIuYGq/U",
+    "instance": null,
+    "targetOverrides": null,
+    "nestedPrefabInstanceRoots": null
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -711,6 +706,8 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "cbHfWicExPZLG+kvOtBqD5"
+    "fileId": "cbHfWicExPZLG+kvOtBqD5",
+    "instance": null,
+    "targetOverrides": null
   }
 ]

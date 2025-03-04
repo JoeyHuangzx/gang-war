@@ -1,8 +1,8 @@
-import { FighterData, LevelData } from "../Datas/CsvConfig";
-import { Formation } from "../Net/NetApi";
-import { CSVManager } from "./CSVManager";
-import { LogManager } from "./LogManager";
-import { PlayerData } from "./PlayerData";
+import { FighterData, LevelData } from '../Datas/CsvConfig';
+import { Formation } from '../Net/NetApi';
+import { CSVManager } from './CSVManager';
+import { LogManager } from './LogManager';
+import { PlayerData } from './PlayerData';
 
 export class LevelManager {
   private static _instance: LevelManager;
@@ -36,10 +36,10 @@ export class LevelManager {
     this.loadLevel(this.currentLevel);
   }
 
-  public async loadData(){
-    const mgr=CSVManager.getInstance();
-    const promises = [mgr.loadCSV<FighterData>('fighter'),mgr.loadCSV<LevelData>('level')];
-    const datas=await Promise.all(promises);
+  public async loadData() {
+    const mgr = CSVManager.getInstance();
+    const promises = [mgr.loadCSV<FighterData>('fighter'), mgr.loadCSV<LevelData>('level')];
+    const datas = await Promise.all(promises);
     this.loadFighterData(datas[0]);
     this.loadLevelData(datas[1]);
   }
@@ -93,6 +93,10 @@ export class LevelManager {
     return this.fighterMap.get(id);
   }
 
+  public getCurrLevelData(): LevelData {
+    return this.levelMap.get(PlayerData.getInstance().UserData.currentLevel);
+  }
+
   /** 根据当前阵容计算战力 */
   public calculatePower() {
     const currentFormation = PlayerData.getInstance().UserData.formation.filter(o => o.fighterId !== undefined);
@@ -107,8 +111,7 @@ export class LevelManager {
   }
 
   parseEnemyFormation(): Formation[] {
-    const currentLevel = PlayerData.getInstance().UserData.currentLevel;
-    const levelData = this.levelMap.get(currentLevel);
+    const levelData = this.getCurrLevelData();
     const enemyFormation = [];
     const tempArr = levelData.formation.split('_');
     for (let i = 0; i < tempArr.length; i++) {

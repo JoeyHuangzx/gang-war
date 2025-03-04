@@ -45,6 +45,7 @@ export class FighterManager {
     this.initFormation(this.userData.formation, FighterTypeEnum.Self);
     this.initFormation(LevelManager.getInstance().enemyFormation, FighterTypeEnum.Enemy);
     EventManager.on(EventName.GAME_START, this.gameStart, this);
+    EventManager.on(EventName.GAME_RESET, this.gameReset, this);
   }
 
   initFormation(_formation: Formation[], _formationType: FighterTypeEnum) {
@@ -117,7 +118,24 @@ export class FighterManager {
         closestEnemy = enemy.node;
       }
     }
-    LogManager.debug(`找到新敌人：`);
-    return closestEnemy.getComponent(Fighter);
+    LogManager.debug(`找到新敌人：`, closestEnemy);
+    return closestEnemy ? closestEnemy.getComponent(Fighter) : null;
+  }
+
+  removeFighter(fighter: Fighter) {
+    const arr = this.fighterMap.get(fighter.fighterType);
+    arr.splice(arr.indexOf(fighter), 1);
+  }
+
+  gameReset() {
+    this.fighterMap.forEach(item => {
+      item.forEach(fighter => {
+        fighter.resetData();
+        PoolManager.getInstance().put(fighter.node.name, fighter.node);
+      });
+    });
+    this.fighterMap.clear();
+    this.initFormation(this.userData.formation, FighterTypeEnum.Self);
+    this.initFormation(LevelManager.getInstance().enemyFormation, FighterTypeEnum.Enemy);
   }
 }

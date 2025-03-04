@@ -1,61 +1,63 @@
-import {
-  _decorator,
-  Component,
-  director,
-  EventKeyboard,
-  input,
-  Input,
-  instantiate,
-  KeyCode,
-  Node,
-  Prefab,
-  Vec3,
-} from 'cc';
-import { ResourceManager } from '../Core/ResourceManager';
-import { FighterModel } from '../Logic/Fighters/FighterModel';
-import { FighterTypeEnum } from '../Global/FighterTypeEnum';
-import { PoolManager } from '../Logic/Pools/PoolManager';
-import { Profiler } from '../Common/Profile/Profile';
+import { _decorator, Component, EventKeyboard, input, Input, KeyCode, Vec3 } from 'cc';
+import { LogManager } from '../Core/LogManager';
+import { Quaternion } from '../Common/Utils/Quaternion';
+import { Fighter } from '../Logic/Fighters/Fighter';
 const { ccclass, property } = _decorator;
 
 @ccclass('ModelTest')
 export class ModelTest extends Component {
-  async start() {
-    this.testModel();
-    input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
-  }
+  @property
+  speed: number = 5;
 
-  async testModel() {
-    const mgr = ResourceManager.getInstance();
-    Profiler.start('init_pool');
-    const prefabs = await Promise.all([
-      mgr.load(`prefabs/model/man/axe`, Prefab),
-      mgr.load(`prefabs/model/man/altman01`, Prefab),
-      mgr.load(`prefabs/fight/fighter`, Prefab),
-    ]);
-    // const modelPrefab = await ResourceManager.getInstance().load(`prefabs/model/man/axe`, Prefab);
-    for (let i = 0; i < prefabs.length; i++) {
-      PoolManager.getInstance().initPool(prefabs[i].name, prefabs[i], 3, 10);
-    }
-    Profiler.end('init_pool');
-    return;
+  @property
+  angle: number = 10;
+
+  @property(Vec3)
+  moveDir: Vec3 = new Vec3(0, 0, 0);
+
+  private isMoving = false;
+
+  start() {
+    input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
+    // this.node.getComponent(Fighter).
   }
 
   onKeyDown(event: EventKeyboard) {
     switch (event.keyCode) {
       case KeyCode.SPACE:
+        this.isMoving = true;
+        break;
+      case KeyCode.KEY_T:
+        this.isMoving = false;
+        break;
+      case KeyCode.KEY_E:
+        this.angle = Math.abs(this.angle);
+        this.rotate();
+        break;
+      case KeyCode.KEY_Q:
+        this.attackEffect();
         break;
     }
   }
 
-  async createMode(name: string, pos: Vec3) {
-    const modelPrefab = await ResourceManager.getInstance().load(`prefabs/model/man/axe`, Prefab);
-    const _node = instantiate(modelPrefab);
-    _node.name = name;
-    director.getScene().addChild(_node);
-    _node.setWorldPosition(pos);
-    return _node.getComponent(FighterModel);
+  update(deltaTime: number) {
+    if (this.isMoving) {
+      this.moveDir = this.node.forward.negative();
+      LogManager.debug(this.node.position.toString());
+      const newPos = this.node.position.add(this.moveDir.multiplyScalar(this.speed * deltaTime));
+      this.node.setWorldPosition(newPos);
+      // this.node.translate(this.moveDir.multiplyScalar(this.speed * deltaTime));
+      // this.rotate(deltaTime);
+    }
   }
 
-  update(deltaTime: number) {}
+  rotateTime = 0;
+  rotate() {
+    // this.rotateTime += deltaTime;
+    this.node.setWorldRotation(Quaternion.RotateY(this.node, this.angle));
+  }
+
+  attackEffect() {
+    this.node.getComponent(Fighter).attackEffect();
+  }
 }
