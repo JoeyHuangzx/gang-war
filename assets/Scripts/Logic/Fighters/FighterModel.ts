@@ -1,4 +1,4 @@
-import { _decorator, Component, input, Input, KeyCode, Node, SkeletalAnimation, Vec3 } from 'cc';
+import { _decorator, Animation, AnimationClip, Component, input, Input, KeyCode, Node, SkeletalAnimation, SkeletalAnimationState, Vec3 } from 'cc';
 import { FighterAnimationEnum } from './FighterAnimationEnum';
 import { LogManager } from '../../Core/LogManager';
 import { FighterTypeEnum } from '../../Global/FighterTypeEnum';
@@ -12,6 +12,8 @@ export class FighterModel extends Component {
   ticker = 0;
   findEnemyDt = 1;
 
+  private _animationFinished: Function = null;
+
   start() {
     this.skeletalAnimation.on(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
     //测试动画播放
@@ -22,14 +24,21 @@ export class FighterModel extends Component {
     this.ticker += deltaTime;
   }
 
-  private onAnimationFinished() {
-    this.skeletalAnimation.off(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
+  private onAnimationFinished(type:Animation.EventType, state:SkeletalAnimationState) {
+    if (this._animationFinished) {
+      this._animationFinished();
+    }
+   
+    this.skeletalAnimation.off( Animation.EventType.FINISHED, this.onAnimationFinished, this);
+  }
+
+  public setAnimationFinishedCallback(callback: Function) {
+    this._animationFinished = callback;
   }
 
   public playAnimation(name: FighterAnimationEnum) {
     if (!this.isAnimationPlaying(name)) {
-      this.skeletalAnimation.crossFade(name, 0.3);
-      LogManager.debug(`play animation:${name}`);
+      this.skeletalAnimation.play(name);
     }
   }
 
@@ -44,11 +53,5 @@ export class FighterModel extends Component {
     }
     const animationState = this.skeletalAnimation.getState(animationName);
     return animationState && animationState.isPlaying;
-  }
-
-  async waitForAnimationFinished(animationName: FighterAnimationEnum) {
-    while (this.skeletalAnimation.getState(animationName).isPlaying) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
   }
 }

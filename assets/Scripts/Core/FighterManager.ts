@@ -49,7 +49,7 @@ export class FighterManager {
   }
 
   initFormation(_formation: Formation[], _formationType: FighterTypeEnum) {
-    this.gridManager.generateGrids(_formation.length, _formationType);
+    if(!this.gridManager.hasGrid(_formationType)) this.gridManager.generateGrids(_formation.length, _formationType);
     _formation.forEach(item => {
       if (item.fighterId) {
         this.loadSoldier(item.id, LevelManager.getInstance().getFighterData(item.fighterId), _formationType);
@@ -67,7 +67,6 @@ export class FighterManager {
   }
 
   public addFighter(formation: Formation, _formationType: FighterTypeEnum) {
-    // const _soldierPrefabName = LevelManager.getInstance().getFighterData(formation.fighterId).prefabName;
     this.loadSoldier(formation.id, LevelManager.getInstance().getFighterData(formation.fighterId), _formationType);
   }
 
@@ -84,7 +83,7 @@ export class FighterManager {
     GameManager.getInstance().gameNode.addChild(baseNode);
     baseNode.setPosition(gridNode.position);
     if (fighterData?.prefabName !== '') {
-      const fighter = baseNode.getComponent(Fighter).initData(fighterData, _formationType);
+      const fighter = baseNode.getComponent(Fighter).initData(fighterData, _formationType,pos);
       gridNode.getComponent(Cell).showEffect();
       if (this.fighterMap.has(_formationType)) {
         this.fighterMap.get(_formationType).push(fighter);
@@ -118,7 +117,7 @@ export class FighterManager {
         closestEnemy = enemy.node;
       }
     }
-    LogManager.debug(`找到新敌人：`, closestEnemy);
+    // LogManager.debug(`找到新敌人：`, closestEnemy);
     return closestEnemy ? closestEnemy.getComponent(Fighter) : null;
   }
 
@@ -131,7 +130,7 @@ export class FighterManager {
     this.fighterMap.forEach(item => {
       item.forEach(fighter => {
         fighter.resetData();
-        PoolManager.getInstance().put(fighter.node.name, fighter.node);
+        fighter.recycle();
       });
     });
     this.fighterMap.clear();

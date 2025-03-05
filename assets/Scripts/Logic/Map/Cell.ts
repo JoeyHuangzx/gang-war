@@ -6,13 +6,16 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Cell')
 export class Cell extends Component {
+
+  private _effectNode: Node = null;
+
   async start() {}
 
   async showEffect() {
-    // const prefab =
-    const node = PoolManager.getInstance().get('upLoop01');
-    this.node.addChild(node);
-    node.setPosition(0, 0);
+    if(this._effectNode) return;
+    this._effectNode = PoolManager.getInstance().get('upLoop01');
+    this.node.addChild(this._effectNode);
+    this._effectNode.setPosition(0, 0);
   }
 
   update(deltaTime: number) {}

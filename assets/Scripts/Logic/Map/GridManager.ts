@@ -96,6 +96,13 @@ export class GridManager extends Component {
     }
   }
 
+  /** 判断该阵型是否已经有格子了 */
+  hasGrid(_formationType: FighterTypeEnum): boolean {
+    const len = _formationType === FighterTypeEnum.Enemy ? this.enemyGridMap.size : this.gridMap.size;
+    LogManager.debug(`阵型:${_formationType},是否有格子:${len}`);
+    return len>0; 
+  }
+
   protected onDestroy(): void {
     // EventManager.off(EventName.ADD_GRID, this.addGrid);
   }
