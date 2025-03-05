@@ -9,6 +9,8 @@ export class Effect extends Component {
   @property
   autoDestroy: boolean = false;
 
+  private _callback = null;
+
   start() {
     if (!this.effectAni) {
       this.effectAni = this.getComponent(Animation);
@@ -24,7 +26,15 @@ export class Effect extends Component {
     }
   }
 
+  /**
+   * 动画完成事件回调
+   */
+  public setCallback(callback: Function) {
+    this._callback = callback;
+  }
+
   finishedAnimation() {
+    this._callback && this._callback();
     if (this.autoDestroy) {
       this.node.destroy();
     }

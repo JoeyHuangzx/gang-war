@@ -8,6 +8,7 @@ import { PlayerData } from '../../Core/PlayerData';
 import { LevelManager } from '../../Core/LevelManager';
 import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
+import { EffectManager } from '../../Logic/Effects/EffectManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('FightUI')
@@ -85,6 +86,7 @@ export class FightUI extends BaseUI {
 
   private onSkillButtonClick() {
     LogManager.info('技能');
+    EffectManager.getInstance().playFireBall();
   }
 
   update(deltaTime: number) {}
