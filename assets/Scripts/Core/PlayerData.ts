@@ -30,7 +30,7 @@ export class PlayerData {
 
   initData(userData: UserData) {
     this._userData = userData;
-    localStorage.setItem('_userData', JSON.stringify(userData));
+    localStorage.setItem(Constants.STORAGE_KEY.USER_DATA, JSON.stringify(userData));
   }
 
   // 更新金币

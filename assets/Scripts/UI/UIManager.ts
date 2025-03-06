@@ -1,11 +1,12 @@
-import { _decorator, instantiate, Node, resources, Prefab, Component } from "cc";
-import { UIConfig } from "./Config/UIConfig";
-import { UIType } from "./Enum/UIEnum";
-import { BaseUI } from "./Views/BaseUI";
+import { _decorator, instantiate, Node, resources, Prefab, Component } from 'cc';
+import { UIConfig } from './Config/UIConfig';
+import { UIType } from './Enum/UIEnum';
+import { BaseUI } from './Views/BaseUI';
+import { ResourceManager } from '../Core/ResourceManager';
 
 const { ccclass, property } = _decorator;
 
-@ccclass("UIManager")
+@ccclass('UIManager')
 export class UIManager extends Component {
   @property(Node) private uiRoot: Node = null; // UI根节点
   private static instance: UIManager;
@@ -25,7 +26,7 @@ export class UIManager extends Component {
 
     if (!ui) {
       const prefabPath = UIConfig[uiType];
-      const prefab = await this.loadPrefab(prefabPath);
+      const prefab = await ResourceManager.getInstance().load(prefabPath, Prefab); //this.loadPrefab(prefabPath);
       const uiNode = instantiate(prefab);
       uiNode.parent = this.uiRoot;
 
@@ -51,15 +52,5 @@ export class UIManager extends Component {
       ui.dispose();
       this.uiInstances.delete(uiType);
     }
-  }
-
-  /** 加载Prefab */
-  private loadPrefab(path: string): Promise<Prefab> {
-    return new Promise((resolve, reject) => {
-      resources.load(path, Prefab, (err, prefab) => {
-        if (err) reject(err);
-        else resolve(prefab);
-      });
-    });
   }
 }

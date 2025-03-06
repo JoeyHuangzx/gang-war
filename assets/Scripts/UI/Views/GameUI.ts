@@ -1,4 +1,19 @@
-import { _decorator, CCClass, CCInteger, Component, Enum, Label, math, Node, RichText, Sprite, tween, Vec3 } from 'cc';
+import {
+  _decorator,
+  CCClass,
+  CCInteger,
+  Component,
+  Enum,
+  instantiate,
+  Label,
+  math,
+  Node,
+  Prefab,
+  RichText,
+  Sprite,
+  tween,
+  Vec3,
+} from 'cc';
 import { BaseUI } from './BaseUI';
 import { UIManager } from '../UIManager';
 import { UIType } from '../Enum/UIEnum';
@@ -10,6 +25,7 @@ import { Camera } from '../../Logic/Camera';
 import { UserData } from '../../Net/NetApi';
 import { LevelManager } from '../../Core/LevelManager';
 import { Constants } from '../../Global/Constants';
+import { ResourceManager } from '../../Core/ResourceManager';
 const { ccclass, property } = _decorator;
 
 /** GameUI 的数据结构 */
@@ -34,13 +50,10 @@ export class GameUI extends BaseUI<GameUIData> {
   @property(Label)
   enemyPower: Label = null;
 
-  @property(Label)
   onlineReward: Label = null;
 
-  @property(Label)
   buyCharacter: Label = null;
 
-  @property(Label)
   buySlot: Label = null;
 
   // 关卡解锁tip
@@ -51,13 +64,10 @@ export class GameUI extends BaseUI<GameUIData> {
   @property(Node)
   startButton: Node = null;
 
-  @property(Node)
   rewardButton: Node = null;
 
-  @property(Node)
   buyCharacterButton: Node = null;
 
-  @property(Node)
   buySlotButton: Node = null;
 
   // 战力表指针
@@ -72,6 +82,28 @@ export class GameUI extends BaseUI<GameUIData> {
   playerData: PlayerData;
   userData: UserData = null;
   dataMgr: LevelManager = null;
+
+  protected onLoad(): void {
+    ResourceManager.getInstance()
+      .load('prefabs/items/bottomButton', Prefab)
+      .then((_prefab: Prefab) => {
+        const _bottomNode = instantiate(_prefab);
+        this.node.addChild(_bottomNode);
+        this.rewardButton = _bottomNode.getChildByName('onlineRewardButton');
+        this.buyCharacterButton = _bottomNode.getChildByName('buyCharacterButton');
+        this.buySlotButton = _bottomNode.getChildByName('buySlotButton');
+        this.onlineReward = this.rewardButton.getChildByName('item_count').getComponent(Label);
+        this.buyCharacter = this.buyCharacterButton.getChildByName('item_count').getComponent(Label);
+        this.buySlot = this.buySlotButton.getChildByName('item_count').getComponent(Label);
+        this.goldUpdateHandle();
+        this.addListener();
+      })
+      .catch((error: Error) => {
+        LogManager.error('加载prefabs/items/bottomButton失败', error);
+      });
+  }
+
+  protected start(): void {}
 
   addListener() {
     //侦听按钮事件
@@ -89,11 +121,9 @@ export class GameUI extends BaseUI<GameUIData> {
     this.userData = this.playerData.UserData;
     this.dataMgr = LevelManager.getInstance();
     LogManager.info('StartUI 初始化', data);
-    this.addListener();
 
     this.updateData();
     this.startSwing();
-    this.goldUpdateHandle();
   }
 
   public updateData() {
@@ -101,6 +131,11 @@ export class GameUI extends BaseUI<GameUIData> {
     this.currentLevel.string = `第${this.userData.currentLevel}关`;
     this.ourPower.string = this.dataMgr.calculatePower().toString();
     this.enemyPower.string = this.dataMgr.calculateEnemyPower().toString();
+  }
+
+  public goldUpdateHandle() {
+    this.goldCount.string = `${Math.floor(this.userData.gold)}`;
+    this.checkButtonVisible();
   }
 
   public checkButtonVisible() {
@@ -116,11 +151,6 @@ export class GameUI extends BaseUI<GameUIData> {
       this.buyCharacter.string = '格子不足';
       this.setSpriteGray(this.buyCharacterButton, true);
     }
-  }
-
-  public goldUpdateHandle() {
-    this.goldCount.string = `${Math.floor(this.userData.gold)}`;
-    this.checkButtonVisible();
   }
 
   public onlineRewardUpdateHandle() {
@@ -192,6 +222,10 @@ export class GameUI extends BaseUI<GameUIData> {
   public clickBottomButton(type: number) {}
 
   protected onDestroy(): void {
+    this.removeEvent();
+  }
+
+  private removeEvent() {
     this.startButton.off(Node.EventType.TOUCH_END, this.onStartButtonClick, this);
     this.rewardButton.off(Node.EventType.TOUCH_END, this.onRewardButtonClick, this);
     this.buyCharacterButton.off(Node.EventType.TOUCH_END, this.onBuyCharacterButtonClick, this);

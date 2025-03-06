@@ -45,10 +45,14 @@ export class FightUI extends BaseUI {
 
   private _gold = 0;
 
+  start() {
+    this.addListener();
+  }
+
   public init(data?: any): void {
     LogManager.info('FightUI 初始化', data);
     this.dataMgr = LevelManager.getInstance();
-    this.addListener();
+
     this.initData();
   }
 
@@ -92,7 +96,12 @@ export class FightUI extends BaseUI {
   update(deltaTime: number) {}
 
   protected onDestroy(): void {
+    this.removeEvent();
+  }
+
+  private removeEvent() {
     this.restartButton.off(Node.EventType.TOUCH_END, this.onRestartButtonClick, this);
     this.skillButton.off(Node.EventType.TOUCH_END, this.onSkillButtonClick, this);
+    EventManager.off(EventName.FIGHT_GOLD_UPDATE, this.updateGold);
   }
 }

@@ -1,4 +1,16 @@
-import { _decorator, Animation, AnimationClip, Component, input, Input, KeyCode, Node, SkeletalAnimation, SkeletalAnimationState, Vec3 } from 'cc';
+import {
+  _decorator,
+  Animation,
+  AnimationClip,
+  Component,
+  input,
+  Input,
+  KeyCode,
+  Node,
+  SkeletalAnimation,
+  SkeletalAnimationState,
+  Vec3,
+} from 'cc';
 import { FighterAnimationEnum } from './FighterAnimationEnum';
 import { LogManager } from '../../Core/LogManager';
 import { FighterTypeEnum } from '../../Global/FighterTypeEnum';
@@ -14,9 +26,8 @@ export class FighterModel extends Component {
 
   private _animationFinished: Function = null;
 
-  start() {
+  onEnable() {
     this.skeletalAnimation.on(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
-    //测试动画播放
     this.playAnimation(FighterAnimationEnum.Idle);
   }
 
@@ -24,12 +35,12 @@ export class FighterModel extends Component {
     this.ticker += deltaTime;
   }
 
-  private onAnimationFinished(type:Animation.EventType, state:SkeletalAnimationState) {
+  private onAnimationFinished(type: Animation.EventType, state: SkeletalAnimationState) {
     if (this._animationFinished) {
       this._animationFinished();
     }
-   
-    this.skeletalAnimation.off( Animation.EventType.FINISHED, this.onAnimationFinished, this);
+
+    this.skeletalAnimation.off(Animation.EventType.FINISHED, this.onAnimationFinished, this);
   }
 
   public setAnimationFinishedCallback(callback: Function) {
@@ -40,6 +51,10 @@ export class FighterModel extends Component {
     if (!this.isAnimationPlaying(name)) {
       this.skeletalAnimation.play(name);
     }
+  }
+
+  protected onDisable(): void {
+    this._animationFinished = null;
   }
 
   /**

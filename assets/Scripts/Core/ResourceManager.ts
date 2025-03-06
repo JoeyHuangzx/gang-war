@@ -46,11 +46,11 @@ export class ResourceManager {
    * @param type 指定资源类型（仅远程资源有效）
    */
   public async load<T extends typeof Asset>(path: string, type?: T): Promise<InstanceType<T>> {
-    Profiler.start('ResourceManager.load_'+path);
+    Profiler.start('ResourceManager.load_' + path);
     if (this.cache.has(path)) {
       const entry = this.cache.get(path)!;
       entry.refCount++;
-      Profiler.end('ResourceManager.load_'+path);
+      Profiler.end('ResourceManager.load_' + path);
       return entry.asset as InstanceType<T>;
     }
 
@@ -58,12 +58,12 @@ export class ResourceManager {
       const asset = await (this.isRemotePath(path) ? this.loadRemote(path, type) : this.loadLocal(path));
 
       this.cache.set(path, { refCount: 1, asset });
-      Profiler.end('ResourceManager.load_'+path);
+      Profiler.end('ResourceManager.load_' + path);
       LogManager.info(`Resource loaded success: ${path}`);
       return asset as InstanceType<T>;
     } catch (error) {
       LogManager.error(`Failed to load resource: ${path}`, error);
-      Profiler.end('ResourceManager.load_'+path);
+      Profiler.end('ResourceManager.load_' + path);
       throw error;
     }
   }
