@@ -29,9 +29,16 @@ resourceManager.releaseAll(["audios/bgm", "textures/icon"]);
 // 清空所有缓存
 resourceManager.clear(); */
 
+interface CacheEntry<T extends Asset> {
+  refCount: number;
+  asset?: T;
+  // promise?: Promise<T>;  // 新增：加载中的Promise
+}
+
 export class ResourceManager {
   private static _instance: ResourceManager;
-  private cache: Map<string, { refCount: number; asset: any }> = new Map();
+  private cache: Map<string, CacheEntry<Asset>> = new Map();
+  private loadingMap:Map<string,Promise<Asset>>=new Map();
 
   public static getInstance(): ResourceManager {
     if (!this._instance) {
@@ -46,22 +53,31 @@ export class ResourceManager {
    * @param type 指定资源类型（仅远程资源有效）
    */
   public async load<T extends typeof Asset>(path: string, type?: T): Promise<InstanceType<T>> {
-    Profiler.start('ResourceManager.load_' + path);
+    
     if (this.cache.has(path)) {
       const entry = this.cache.get(path)!;
       entry.refCount++;
-      Profiler.end('ResourceManager.load_' + path);
       return entry.asset as InstanceType<T>;
     }
 
+    // 是否已经有相同资源在加载
+    if(this.loadingMap.has(path)){
+      LogManager.warn(`Resource is loading: ${path}`);
+      const existPromise=this.loadingMap.get(path);
+      return existPromise as Promise<InstanceType<T>>;
+    }
+    Profiler.start('ResourceManager.load_' + path);
     try {
-      const asset = await (this.isRemotePath(path) ? this.loadRemote(path, type) : this.loadLocal(path));
-
+      const loadPromise=(this.isRemotePath(path) ? this.loadRemote(path, type) : this.loadLocal(path));
+      this.loadingMap.set(path,loadPromise);
+      const asset = await loadPromise;
+      this.loadingMap.delete(path);
       this.cache.set(path, { refCount: 1, asset });
       Profiler.end('ResourceManager.load_' + path);
       LogManager.info(`Resource loaded success: ${path}`);
       return asset as InstanceType<T>;
     } catch (error) {
+      this.loadingMap.delete(path);
       LogManager.error(`Failed to load resource: ${path}`, error);
       Profiler.end('ResourceManager.load_' + path);
       throw error;

@@ -38,39 +38,42 @@ export class Fighter extends Component {
   private targetEnemy: Fighter | null = null; // 当前目标敌人
   private isAttacking: boolean = false; // 是否在攻击
   private _isDead: boolean = false;
+  public IsDead(): boolean {
+    return this._isDead;
+  }
   ticker = 0;
   findEnemyDt = 1;
   fighterType: FighterTypeEnum = FighterTypeEnum.Self;
   fighterData: FighterData = null;
-  pos=0;
+  pos = 0;
 
   start() {
     // this.node.setScale(new Vec3(0.5, 0.5, 0.5));
   }
 
-  initData(fighterData: FighterData, _formationType: FighterTypeEnum,_pos:number): Fighter {
+  initData(fighterData: FighterData, _formationType: FighterTypeEnum, _pos: number): Fighter {
     this.fighterData = fighterData;
-    this.pos=_pos;
+    this.pos = _pos;
     let model = PoolManager.getInstance().get(fighterData.prefabName); // instantiate(modelPrefab);
     model.name = fighterData.prefabName;
     this._hp = fighterData.hp;
     this.modelParent.addChild(model);
     model.setPosition(0, 0, 0);
-    
+
     this._damage = fighterData.attack;
     this.fighterType = _formationType;
     if (this.fighterType === FighterTypeEnum.Enemy) {
       this.modelParent.setWorldRotation(Quaternion.GetQuatFromAngle(new Vec3(0, 270, 0)));
     }
-    this._isDead=false;
-    this.targetEnemy=null;
+    this._isDead = false;
+    this.targetEnemy = null;
     this.fighterModel = this.modelParent.getComponentInChildren(FighterModel);
     this.fighterModel.playAnimation(FighterAnimationEnum.Idle);
     return this;
   }
 
   update(deltaTime: number) {
-    if(this._isDead) return;
+    if (this._isDead) return;
     this.ticker += deltaTime;
     if (this.targetEnemy) {
       const myPos = this.node.position;
@@ -95,7 +98,7 @@ export class Fighter extends Component {
     this.scheduleOnce(() => {
       this.isAttacking = false;
       this.targetEnemy = FighterManager.getInstance().findClosestEnemy(this); // 继续寻找新的目标
-      if (!this.targetEnemy) {
+      if (!this.targetEnemy && !this.targetEnemy?.IsDead) {
         // LogManager.debug('没有目标');
         this.fighterModel.playAnimation(FighterAnimationEnum.Idle);
       }
@@ -183,17 +186,16 @@ export class Fighter extends Component {
       EventManager.emit(EventName.FIGHT_GOLD_UPDATE, this.fighterData.coin);
     }
     this._isDead = true;
-    this.targetEnemy=null;
+    this.targetEnemy = null;
     FighterManager.getInstance().removeFighter(this);
-    this.fighterModel.setAnimationFinishedCallback(()=>{
+    this.fighterModel.setAnimationFinishedCallback(() => {
       this.recycle();
     });
     this.fighterModel.playAnimation(FighterAnimationEnum.Dead);
-    
   }
 
-  public recycle(){
-    LogManager.info('recycle:', this.node.name);
+  public recycle() {
+    LogManager.info('recycle:', this.fighterModel.node.name,this.fighterType);
     PoolManager.getInstance().put(this.fighterModel.node.name, this.fighterModel.node);
     PoolManager.getInstance().put(Constants.PREFAB_NAME.FIGHTER, this.node);
   }
