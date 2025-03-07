@@ -95,7 +95,7 @@ export class GameUI extends BaseUI<GameUIData> {
         this.onlineReward = this.rewardButton.getChildByName('item_count').getComponent(Label);
         this.buyCharacter = this.buyCharacterButton.getChildByName('item_count').getComponent(Label);
         this.buySlot = this.buySlotButton.getChildByName('item_count').getComponent(Label);
-        this.goldUpdateHandle();
+        this.checkButtonVisible();
         this.addListener();
       })
       .catch((error: Error) => {

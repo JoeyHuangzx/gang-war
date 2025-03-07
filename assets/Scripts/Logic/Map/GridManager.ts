@@ -42,7 +42,10 @@ export class GridManager extends Component {
     }
 
     layer = Math.floor(baseIndex / height);
-    let x = this.basePosition.x - layer * this.gridSize;
+    let x =
+      this.formationType === FighterTypeEnum.Enemy
+        ? this.basePosition.x + layer * this.gridSize
+        : this.basePosition.x - layer * this.gridSize;
     let z = 0;
     const middleGap = Math.floor(height / 2);
     const middle = layer * height + 1;
@@ -100,7 +103,7 @@ export class GridManager extends Component {
   hasGrid(_formationType: FighterTypeEnum): boolean {
     const len = _formationType === FighterTypeEnum.Enemy ? this.enemyGridMap.size : this.gridMap.size;
     LogManager.debug(`阵型:${_formationType},是否有格子:${len}`);
-    return len>0; 
+    return len > 0;
   }
 
   protected onDestroy(): void {
