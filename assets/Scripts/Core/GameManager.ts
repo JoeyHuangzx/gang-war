@@ -11,6 +11,9 @@ import { PoolConfig } from '../Datas/PoolConfig';
 import { LogManager } from './LogManager';
 import { EventManager } from './EventManager';
 import { EventName } from '../Global/EventName';
+import { UIManager } from '../UI/UIManager';
+import { UIType } from '../UI/Enum/UIEnum';
+import { Camera } from '../Logic/Camera';
 
 export class GameManager {
   private static _instance: GameManager;
@@ -41,6 +44,7 @@ export class GameManager {
       LogManager.error('未找到地图');
     }
     EventManager.on(EventName.GAME_RESET, this.resetGame, this);
+    EventManager.on(EventName.GAME_OVER, this.endGame, this);
   }
 
   async initPool() {
@@ -63,6 +67,8 @@ export class GameManager {
   }
 
   resetGame() {
+    Camera.instance.endGame();
+
     // 开始游戏逻辑
   }
 
@@ -70,7 +76,8 @@ export class GameManager {
     // 暂停游戏逻辑
   }
 
-  endGame() {
+  endGame(data) {
     // 结束游戏逻辑
+    UIManager.getInstance().showUI(UIType.SettleUI, data);
   }
 }

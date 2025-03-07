@@ -12,6 +12,7 @@ import { ResourceManager } from '../../Core/ResourceManager';
 import { Effect } from '../Effects/Effect';
 import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
+import { SettleUIData } from '../../UI/Views/SettleUI';
 const { ccclass, property } = _decorator;
 
 /**
@@ -41,6 +42,7 @@ export class Fighter extends Component {
   public IsDead(): boolean {
     return this._isDead;
   }
+  private _isGameOver = false;
   ticker = 0;
   findEnemyDt = 1;
   fighterType: FighterTypeEnum = FighterTypeEnum.Self;
@@ -69,13 +71,14 @@ export class Fighter extends Component {
     this.targetEnemy = null;
     this.fighterModel = this.modelParent.getComponentInChildren(FighterModel);
     this.fighterModel.playAnimation(FighterAnimationEnum.Idle);
+    EventManager.on(EventName.GAME_OVER, this.gameOver, this);
     return this;
   }
 
   update(deltaTime: number) {
     if (this._isDead) return;
     this.ticker += deltaTime;
-    if (this.targetEnemy) {
+    if (this.targetEnemy && !this._isGameOver) {
       const myPos = this.node.position;
       const targetPos = this.targetEnemy.node.position;
       const distance = Vec3.distance(myPos, targetPos);
@@ -94,8 +97,19 @@ export class Fighter extends Component {
     this.findEnemy();
   }
 
+  gameOver(data: SettleUIData) {
+    this.targetEnemy = null;
+    this.isAttacking = false;
+    this._isGameOver = true;
+    this.fighterModel.playAnimation(data.result ? FighterAnimationEnum.Win : FighterAnimationEnum.Idle);
+  }
+
   findEnemy() {
     this.scheduleOnce(() => {
+      if (this._isGameOver) {
+        this.unscheduleAllCallbacks();
+        return;
+      }
       this.isAttacking = false;
       this.targetEnemy = FighterManager.getInstance().findClosestEnemy(this); // 继续寻找新的目标
       if (!this.targetEnemy && !this.targetEnemy?.IsDead) {
@@ -183,19 +197,21 @@ export class Fighter extends Component {
    */
   public async die(): Promise<void> {
     if (this.fighterType !== FighterTypeEnum.Self) {
-      EventManager.emit(EventName.FIGHT_GOLD_UPDATE, this.fighterData.coin);
+      EventManager.emit(EventName.FIGHT_GOLD_UPDATE, { gold: this.fighterData.coin });
     }
     this._isDead = true;
     this.targetEnemy = null;
     FighterManager.getInstance().removeFighter(this);
     this.fighterModel.setAnimationFinishedCallback(() => {
+      FighterManager.getInstance().checkGameResult();
       this.recycle();
     });
     this.fighterModel.playAnimation(FighterAnimationEnum.Dead);
   }
 
   public recycle() {
-    LogManager.info('recycle:', this.fighterModel.node.name,this.fighterType);
+    LogManager.info('recycle:', this.node.name);
+    EventManager.off(EventName.GAME_OVER, this.gameOver);
     PoolManager.getInstance().put(this.fighterModel.node.name, this.fighterModel.node);
     PoolManager.getInstance().put(Constants.PREFAB_NAME.FIGHTER, this.node);
   }

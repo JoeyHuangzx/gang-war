@@ -16,6 +16,9 @@ export class LevelManager {
     return this._instance;
   }
   private currentLevel: number = 0;
+  public get Level() {
+    return this.currentLevel;
+  }
   public levelMap: Map<number, LevelData> = new Map();
   public fighterMap: Map<number, FighterData> = new Map();
   public enemyFormation: Formation[] = [];

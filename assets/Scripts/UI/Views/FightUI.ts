@@ -73,10 +73,10 @@ export class FightUI extends BaseUI {
     this.enemyPower.string = this.dataMgr.calculateEnemyPower().toString();
   }
 
-  updateGold(gold: number) {
-    LogManager.info('更新金币:', gold);
-    gold = this.dataMgr.getCurrLevelData().coefficient * gold;
-    this._gold += gold;
+  updateGold(data: { gold: number }) {
+    LogManager.info('更新金币:', data);
+    data.gold = this.dataMgr.getCurrLevelData().coefficient * data.gold;
+    this._gold += data.gold;
     this.goldCount.string = this._gold.toString();
   }
 
@@ -84,7 +84,7 @@ export class FightUI extends BaseUI {
     LogManager.info('重新开始');
     UIManager.getInstance().showUI(UIType.GameUI);
     UIManager.getInstance().hideUI(UIType.FightUI);
-    Camera.instance.endGame();
+
     EventManager.emit(EventName.GAME_RESET);
   }
 

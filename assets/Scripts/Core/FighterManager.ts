@@ -37,6 +37,7 @@ export class FighterManager {
   userData: UserData = null;
   gridManager: GridManager = null;
   fighterMap: Map<FighterTypeEnum, Fighter[]> = new Map();
+  private _isGameOver = false;
 
   public initData() {
     // this.loadSoldier();
@@ -49,7 +50,7 @@ export class FighterManager {
   }
 
   initFormation(_formation: Formation[], _formationType: FighterTypeEnum) {
-    if(!this.gridManager.hasGrid(_formationType)) this.gridManager.generateGrids(_formation.length, _formationType);
+    if (!this.gridManager.hasGrid(_formationType)) this.gridManager.generateGrids(_formation.length, _formationType);
     _formation.forEach(item => {
       if (item.fighterId) {
         this.loadSoldier(item.id, LevelManager.getInstance().getFighterData(item.fighterId), _formationType);
@@ -83,7 +84,7 @@ export class FighterManager {
     GameManager.getInstance().gameNode.addChild(baseNode);
     baseNode.setPosition(gridNode.position);
     if (fighterData?.prefabName !== '') {
-      const fighter = baseNode.getComponent(Fighter).initData(fighterData, _formationType,pos);
+      const fighter = baseNode.getComponent(Fighter).initData(fighterData, _formationType, pos);
       gridNode.getComponent(Cell).showEffect();
       if (this.fighterMap.has(_formationType)) {
         this.fighterMap.get(_formationType).push(fighter);
@@ -126,7 +127,33 @@ export class FighterManager {
     arr.splice(arr.indexOf(fighter), 1);
   }
 
+  /**
+   * 检测那个阵营胜利，判断每个阵营的士兵是否都死亡
+   */
+  checkGameResult() {
+    if (this._isGameOver) return;
+    let isWin = false;
+    if (this.fighterMap.get(FighterTypeEnum.Self).length === 0) {
+      isWin = false;
+      this._isGameOver = true;
+    }
+    if (this.fighterMap.get(FighterTypeEnum.Enemy).length === 0) {
+      isWin = true;
+      this._isGameOver = true;
+    }
+    if (this._isGameOver) {
+      setTimeout(() => {
+        EventManager.emit(EventName.GAME_OVER, {
+          result: isWin,
+          currentLevel: LevelManager.getInstance().Level,
+          gold: PlayerData.getInstance().UserData.gold,
+        });
+      }, 1000);
+    }
+  }
+
   gameReset() {
+    this._isGameOver = false;
     this.fighterMap.forEach(item => {
       item.forEach(fighter => {
         fighter.resetData();
