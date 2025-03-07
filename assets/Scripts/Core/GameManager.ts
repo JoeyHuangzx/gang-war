@@ -44,6 +44,7 @@ export class GameManager {
       LogManager.error('未找到地图');
     }
     EventManager.on(EventName.GAME_RESET, this.resetGame, this);
+    EventManager.on(EventName.GAME_INIT, this.resetGame, this);
     EventManager.on(EventName.GAME_OVER, this.endGame, this);
   }
 
@@ -78,6 +79,7 @@ export class GameManager {
 
   endGame(data) {
     // 结束游戏逻辑
+    UIManager.getInstance().hideUI(UIType.FightUI);
     UIManager.getInstance().showUI(UIType.SettleUI, data);
   }
 }

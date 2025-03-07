@@ -15,29 +15,10 @@ export class LevelManager {
     }
     return this._instance;
   }
-  private currentLevel: number = 0;
-  public get Level() {
-    return this.currentLevel;
-  }
+
   public levelMap: Map<number, LevelData> = new Map();
   public fighterMap: Map<number, FighterData> = new Map();
   public enemyFormation: Formation[] = [];
-
-  loadLevel(level: number) {
-    // 加载指定关卡的配置文件
-    // 根据配置文件生成关卡场景
-    this.currentLevel = level;
-  }
-
-  nextLevel() {
-    // 加载下一关
-    this.loadLevel(this.currentLevel + 1);
-  }
-
-  restartLevel() {
-    // 重新加载当前关卡
-    this.loadLevel(this.currentLevel);
-  }
 
   public async loadData() {
     const mgr = CSVManager.getInstance();

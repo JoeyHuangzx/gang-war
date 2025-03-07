@@ -75,9 +75,7 @@ export class FightUI extends BaseUI {
 
   updateGold(data: { gold: number }) {
     LogManager.info('更新金币:', data);
-    data.gold = this.dataMgr.getCurrLevelData().coefficient * data.gold;
-    this._gold += data.gold;
-    this.goldCount.string = this._gold.toString();
+    this.goldCount.string = data.gold.toString();
   }
 
   private onRestartButtonClick() {

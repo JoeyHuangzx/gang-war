@@ -25,6 +25,8 @@ const { ccclass, property } = _decorator;
 export class FighterManager {
   private static _instance: FighterManager;
 
+  private _currGold = 0;
+
   private constructor() {}
 
   public static getInstance(): FighterManager {
@@ -47,6 +49,7 @@ export class FighterManager {
     this.initFormation(LevelManager.getInstance().enemyFormation, FighterTypeEnum.Enemy);
     EventManager.on(EventName.GAME_START, this.gameStart, this);
     EventManager.on(EventName.GAME_RESET, this.gameReset, this);
+    EventManager.on(EventName.GAME_INIT, this.gameInit, this);
   }
 
   initFormation(_formation: Formation[], _formationType: FighterTypeEnum) {
@@ -122,6 +125,16 @@ export class FighterManager {
     return closestEnemy ? closestEnemy.getComponent(Fighter) : null;
   }
 
+  /**
+   * 本局获得金币
+   * @param amount
+   */
+  public addGold(amount: number) {
+    amount = LevelManager.getInstance().getCurrLevelData().coefficient * amount;
+    this._currGold += amount;
+    EventManager.emit(EventName.FIGHT_GOLD_UPDATE, { gold: this._currGold });
+  }
+
   removeFighter(fighter: Fighter) {
     const arr = this.fighterMap.get(fighter.fighterType);
     arr.splice(arr.indexOf(fighter), 1);
@@ -145,14 +158,20 @@ export class FighterManager {
       setTimeout(() => {
         EventManager.emit(EventName.GAME_OVER, {
           result: isWin,
-          currentLevel: LevelManager.getInstance().Level,
-          gold: PlayerData.getInstance().UserData.gold,
+          currentLevel: this.userData.currentLevel,
+          gold: this._currGold,
         });
       }, 1000);
     }
   }
 
+  gameInit() {
+    PlayerData.getInstance().updateGold(this._currGold);
+    this.gameReset();
+  }
+
   gameReset() {
+    this._currGold = 0;
     this._isGameOver = false;
     this.fighterMap.forEach(item => {
       item.forEach(fighter => {

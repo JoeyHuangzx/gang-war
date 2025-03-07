@@ -111,7 +111,14 @@ export class GameUI extends BaseUI<GameUIData> {
     this.rewardButton.on(Node.EventType.TOUCH_END, this.onRewardButtonClick, this);
     this.buyCharacterButton.on(Node.EventType.TOUCH_END, this.onBuyCharacterButtonClick, this);
     this.buySlotButton.on(Node.EventType.TOUCH_END, this.onBuySlotButtonClick, this);
-    EventManager.on(EventName.GOLD_UPDATE, this.goldUpdateHandle, this);
+    EventManager.on(
+      EventName.GOLD_UPDATE,
+      () => {
+        this.goldUpdateHandle();
+        this.checkButtonVisible();
+      },
+      this,
+    );
     EventManager.on(EventName.ONLINE_REWARD_UPDATE, this.onlineRewardUpdateHandle, this);
   }
 
@@ -121,7 +128,7 @@ export class GameUI extends BaseUI<GameUIData> {
     this.userData = this.playerData.UserData;
     this.dataMgr = LevelManager.getInstance();
     LogManager.info('StartUI 初始化', data);
-
+    this.goldUpdateHandle();
     this.updateData();
     this.startSwing();
   }
@@ -135,7 +142,6 @@ export class GameUI extends BaseUI<GameUIData> {
 
   public goldUpdateHandle() {
     this.goldCount.string = `${Math.floor(this.userData.gold)}`;
-    this.checkButtonVisible();
   }
 
   public checkButtonVisible() {

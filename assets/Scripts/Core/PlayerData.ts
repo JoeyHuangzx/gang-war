@@ -38,7 +38,7 @@ export class PlayerData {
     this._userData.gold += amount;
     this._userData.gold = Math.floor(this._userData.gold);
     await this.savePlayerInfo();
-    EventManager.emit(EventName.GOLD_UPDATE, this._userData.gold);
+    EventManager.emit(EventName.GOLD_UPDATE);
   }
 
   // 增加关卡
@@ -113,7 +113,7 @@ export class PlayerData {
     this._userData.onlineReward += (Constants.ONLINE.PROFIT_PER_SECOND * this.getBuyFighterPrice() * times) / 1000;
     this._userData.onlineReward = Number(this._userData.onlineReward.toFixed(2));
     // LogManager.info(`在线奖励更新: ${this._userData.onlineReward}`);
-    EventManager.emit(EventName.ONLINE_REWARD_UPDATE, this._userData.onlineReward);
+    EventManager.emit(EventName.ONLINE_REWARD_UPDATE, { rewardAmount: this._userData.onlineReward });
     // 设置为1分钟保存一次
     if ((Date.now() - this.saveDate) / 1000 > 60) {
       this.savePlayerInfo();

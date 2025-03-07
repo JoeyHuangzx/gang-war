@@ -197,7 +197,7 @@ export class Fighter extends Component {
    */
   public async die(): Promise<void> {
     if (this.fighterType !== FighterTypeEnum.Self) {
-      EventManager.emit(EventName.FIGHT_GOLD_UPDATE, { gold: this.fighterData.coin });
+      FighterManager.getInstance().addGold(this.fighterData.coin);
     }
     this._isDead = true;
     this.targetEnemy = null;

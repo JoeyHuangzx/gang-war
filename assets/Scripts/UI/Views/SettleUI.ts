@@ -3,9 +3,10 @@ import { BaseUI } from './BaseUI';
 import { UIType } from '../Enum/UIEnum';
 import { UIManager } from '../UIManager';
 import { LogManager } from '../../Core/LogManager';
-import { SpriteChange } from '../Common/SpriteChange';
 import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
+import { PlayerData } from '../../Core/PlayerData';
+import { SpriteChange } from '../Common/SpriteChange';
 const { ccclass, property } = _decorator;
 
 export interface SettleUIData {
@@ -48,7 +49,8 @@ export class SettleUI extends BaseUI {
 
   private onAgainButtonClick() {
     LogManager.info('再来一局');
-    EventManager.emit(EventName.GAME_RESET);
+    PlayerData.getInstance().increaseLevel();
+    EventManager.emit(EventName.GAME_INIT);
     UIManager.getInstance().showUI(UIType.GameUI);
     UIManager.getInstance().hideUI(UIType.SettleUI);
   }

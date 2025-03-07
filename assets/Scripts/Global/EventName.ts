@@ -2,12 +2,13 @@ export const EventName = {
   GAME_START: 'GAME_START',
   GAME_RESET: 'GAME_RESET',
   GAME_OVER: 'GAME_OVER',
+  GAME_INIT: 'GAME_INIT',
   /** 金币更新 */
-  GOLD_UPDATE: 'gold_update',
+  GOLD_UPDATE: 'GOLD_UPDATE',
   /** 增加格子 */
-  ADD_GRID: 'add_grid',
+  ADD_GRID: 'ADD_GRID',
   /** 生成格子 */
-  GENERATE_GRID: 'generate_grid',
+  GENERATE_GRID: 'GENERATE_GRID',
   /** 在线奖励更新 */
   ONLINE_REWARD_UPDATE: 'ONLINE_REWARD_UPDATE',
   FIGHT_GOLD_UPDATE: 'FIGHT_GOLD_UPDATE',
