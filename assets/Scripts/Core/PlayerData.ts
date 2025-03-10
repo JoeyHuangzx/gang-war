@@ -156,7 +156,7 @@ export class PlayerData {
     try {
       const response = await HttpClient.getInstance().updateUser(this.UserData.id, this.UserData);
       // 同时保存一份到本地
-      StorageManager.getInstance().saveData(Constants.STORAGE_KEY.GAME_DATA, this.UserData);
+      StorageManager.getInstance().saveData(Constants.STORAGE_KEY.USER_DATA, this.UserData);
       this.saveDate = Date.now();
       LogManager.info('保存玩家信息成功', response);
     } catch (error) {

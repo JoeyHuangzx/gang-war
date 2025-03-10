@@ -26,6 +26,8 @@ export class FighterManager {
   private static _instance: FighterManager;
 
   private _currGold = 0;
+  private _selfPower = 0;
+  private _enemyPower = 0;
 
   private constructor() {}
 
@@ -50,6 +52,8 @@ export class FighterManager {
     EventManager.on(EventName.GAME_START, this.gameStart, this);
     EventManager.on(EventName.GAME_RESET, this.gameReset, this);
     EventManager.on(EventName.GAME_INIT, this.gameInit, this);
+    this._selfPower = LevelManager.getInstance().calculatePower();
+    this._enemyPower = LevelManager.getInstance().calculateEnemyPower();
   }
 
   initFormation(_formation: Formation[], _formationType: FighterTypeEnum) {
@@ -137,6 +141,12 @@ export class FighterManager {
   removeFighter(fighter: Fighter) {
     const arr = this.fighterMap.get(fighter.fighterType);
     arr.splice(arr.indexOf(fighter), 1);
+    if (fighter.fighterType === FighterTypeEnum.Self) {
+      this._selfPower -= fighter.fighterData.fight;
+    } else {
+      this._enemyPower -= fighter.fighterData.fight;
+    }
+    EventManager.emit(EventName.FIGHT_POWER_UPDATE, { selfPower: this._selfPower, enemyPower: this._enemyPower });
   }
 
   /**
@@ -170,6 +180,8 @@ export class FighterManager {
   }
 
   gameReset() {
+    this._selfPower = LevelManager.getInstance().calculatePower();
+    this._enemyPower = LevelManager.getInstance().calculateEnemyPower();
     this._currGold = 0;
     this._isGameOver = false;
     this.fighterMap.forEach(item => {

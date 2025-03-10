@@ -17,10 +17,7 @@ export class GridManager extends Component {
   public enemyGridMap: Map<number, Node> = new Map(); // 存储所有敌方阵容的节点
   private formationType: FighterTypeEnum = null;
 
-  start() {
-    // EventManager.on(EventName.ADD_GRID, this.addGrid, this);
-    // EventManager.on(EventName.GENERATE_GRID,this.generateGrids,this);
-  }
+  start() {}
 
   /** 计算当前格子的位置 */
   private getGridPosition(index: number): Vec3 {
@@ -106,7 +103,5 @@ export class GridManager extends Component {
     return len > 0;
   }
 
-  protected onDestroy(): void {
-    // EventManager.off(EventName.ADD_GRID, this.addGrid);
-  }
+  protected onDestroy(): void {}
 }

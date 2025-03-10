@@ -74,6 +74,13 @@ class HttpClient {
     });
     return result !== null;
   }
+
+  // 重置用户数据
+  async resetUser(id: string): Promise<any | null> {
+    return this.request<any>(`/users/${id}/reset`, {
+      method: 'PUT',
+    });
+  }
 }
 
 export default HttpClient;

@@ -9,7 +9,14 @@ import { LevelManager } from '../../Core/LevelManager';
 import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
 import { EffectManager } from '../../Logic/Effects/EffectManager';
+import { FightProgress } from '../Components/FightProgress';
 const { ccclass, property } = _decorator;
+
+/** FightUI 的数据结构 */
+export interface FightUIData {
+  selfPower: number;
+  enemyPower: number;
+}
 
 @ccclass('FightUI')
 export class FightUI extends BaseUI {
@@ -41,7 +48,8 @@ export class FightUI extends BaseUI {
   @property(Sprite)
   progressIcon: Sprite = null;
 
-  dataMgr: LevelManager = null;
+  @property(FightProgress)
+  fightProgress: FightProgress = null;
 
   private _gold = 0;
 
@@ -49,28 +57,27 @@ export class FightUI extends BaseUI {
     this.addListener();
   }
 
-  public init(data?: any): void {
+  public init(data: FightUIData): void {
     LogManager.info('FightUI 初始化', data);
-    this.dataMgr = LevelManager.getInstance();
 
-    this.initData();
+    this.currentLevel.string = `第${PlayerData.getInstance().UserData.currentLevel}关`;
+    this.goldCount.string = this._gold.toString();
+    this.updatePower(data);
   }
 
   private addListener() {
     this.restartButton.on(Node.EventType.TOUCH_END, this.onRestartButtonClick, this);
     this.skillButton.on(Node.EventType.TOUCH_END, this.onSkillButtonClick, this);
     EventManager.on(EventName.FIGHT_GOLD_UPDATE, this.updateGold, this);
+    EventManager.on(EventName.FIGHT_POWER_UPDATE, this.updatePower, this);
   }
 
-  private initData() {
-    this.currentLevel.string = `第${PlayerData.getInstance().UserData.currentLevel}关`;
-    this.goldCount.string = this._gold.toString();
-    this.updateData();
-  }
-
-  updateData() {
-    this.ourPower.string = this.dataMgr.calculatePower().toString();
-    this.enemyPower.string = this.dataMgr.calculateEnemyPower().toString();
+  updatePower(data: FightUIData) {
+    this.ourPower.string = data.selfPower.toString();
+    this.enemyPower.string = data.enemyPower.toString();
+    const power = data.selfPower >= data.enemyPower ? data.selfPower : data.enemyPower;
+    const gap = power / (data.selfPower + data.enemyPower);
+    this.fightProgress.updateProgress(gap);
   }
 
   updateGold(data: { gold: number }) {

@@ -100,7 +100,7 @@ export class LevelManager {
     const tempArr = levelData.formation.split('_');
     for (let i = 0; i < tempArr.length; i++) {
       const itemArr = tempArr[i].split('#');
-      const _formation: Formation = { id: Number(itemArr[1]), fighterId: Number(itemArr[0]) };
+      const _formation: Formation = { id: i + 1, fighterId: Number(itemArr[0]) };
       enemyFormation.push(_formation);
     }
     this.enemyFormation = enemyFormation;

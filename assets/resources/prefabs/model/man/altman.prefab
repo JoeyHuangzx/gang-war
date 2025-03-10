@@ -782,7 +782,7 @@
       "__id__": 30
     },
     "_group": 1,
-    "_type": 1,
+    "_type": 2,
     "_mass": 1,
     "_allowSleep": false,
     "_linearDamping": 0.1,

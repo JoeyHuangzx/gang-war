@@ -57,7 +57,7 @@ export class Fighter extends Component {
     this.fighterData = fighterData;
     this.pos = _pos;
     const modelName = Constants.FIGHTER_MODEL_TYPE_MAP[fighterData.type];
-    LogManager.info('initData model name:', modelName);
+    LogManager.info('initData model name:', _formationType, modelName);
     let model = PoolManager.getInstance().get(modelName); // instantiate(modelPrefab);
     model.name = fighterData.prefabName;
     this._hp = fighterData.hp;

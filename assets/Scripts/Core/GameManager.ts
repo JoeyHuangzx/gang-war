@@ -43,6 +43,7 @@ export class GameManager {
     } else {
       LogManager.error('未找到地图');
     }
+    EventManager.on(EventName.GAME_START, this.startGame, this);
     EventManager.on(EventName.GAME_RESET, this.resetGame, this);
     EventManager.on(EventName.GAME_INIT, this.resetGame, this);
     EventManager.on(EventName.GAME_OVER, this.endGame, this);
@@ -65,6 +66,16 @@ export class GameManager {
     this.onlineInterval = setInterval(() => {
       PlayerData.getInstance().updateOnlineReward(1000);
     }, 1000);
+  }
+
+  startGame() {
+    const mgr = LevelManager.getInstance();
+    UIManager.getInstance().showUI(UIType.FightUI, {
+      selfPower: mgr.calculatePower(),
+      enemyPower: mgr.calculateEnemyPower(),
+    });
+    UIManager.getInstance().hideUI(UIType.GameUI);
+    Camera.instance.startCameraMovement();
   }
 
   resetGame() {

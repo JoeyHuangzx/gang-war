@@ -24,12 +24,17 @@ export class LoginUI extends BaseUI {
   @property(Node)
   public createUserButton: Node = null;
 
+  @property(Node)
+  public resetButton: Node = null;
+
   start() {
     this.loginButton.on(Node.EventType.TOUCH_END, this.onLoginButtonClick, this);
     this.createUserButton.on(Node.EventType.TOUCH_END, this.onCreateUserButtonClick, this);
-    const data=StorageManager.getInstance().getData<UserData>(Constants.STORAGE_KEY.USER_DATA);
-    if(data){
-        this.userName.string=data.name;
+    this.resetButton.on(Node.EventType.TOUCH_END, this.reset, this);
+    const data = StorageManager.getInstance().getData<UserData>(Constants.STORAGE_KEY.USER_DATA);
+    if (data) {
+      this.userName.string = data.name;
+      PlayerData.getInstance().initData(data);
     }
   }
 
@@ -55,11 +60,22 @@ export class LoginUI extends BaseUI {
 
   enterGame(userData: UserData) {
     PlayerData.getInstance().initData(userData);
-    
+
     director.loadScene('main', () => {
       LogManager.info('加载 main 场景完成');
       GameManager.getInstance().initManagers();
       UIManager.getInstance().showUI<GameUIData>(UIType.GameUI, { gold: 100, level: 1 });
     });
+  }
+
+  async reset() {
+    const result = await HttpClient.getInstance().resetUser(PlayerData.getInstance().UserData.id);
+    LogManager.debug('重置用户数据', result);
+    if (result) {
+      StorageManager.getInstance().deleteData(Constants.STORAGE_KEY.USER_DATA);
+      Toast.show('重置成功');
+    } else {
+      Toast.show('重置失败');
+    }
   }
 }

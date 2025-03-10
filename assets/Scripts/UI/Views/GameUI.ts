@@ -174,9 +174,7 @@ export class GameUI extends BaseUI<GameUIData> {
   // 开始按钮点击事件
   onStartButtonClick() {
     LogManager.info('startButtonClick');
-    UIManager.getInstance().showUI(UIType.FightUI);
-    UIManager.getInstance().hideUI(UIType.GameUI);
-    Camera.instance.startCameraMovement();
+
     EventManager.emit(EventName.GAME_START);
   }
 
