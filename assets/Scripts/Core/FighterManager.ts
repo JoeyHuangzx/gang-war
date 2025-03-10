@@ -86,14 +86,13 @@ export class FighterManager {
     const baseNode = PoolManager.getInstance().get(Constants.PREFAB_NAME.FIGHTER); //instantiate(basePrefab);
     GameManager.getInstance().gameNode.addChild(baseNode);
     baseNode.setPosition(gridNode.position);
-    if (fighterData?.prefabName !== '') {
-      const fighter = baseNode.getComponent(Fighter).initData(fighterData, _formationType, pos);
-      gridNode.getComponent(Cell).showEffect();
-      if (this.fighterMap.has(_formationType)) {
-        this.fighterMap.get(_formationType).push(fighter);
-      } else {
-        this.fighterMap.set(_formationType, [fighter]);
-      }
+    // const modelName = Constants.FIGHTER_MODEL_TYPE_MAP[fighterData.type];
+    const fighter = baseNode.getComponent(Fighter).initData(fighterData, _formationType, pos);
+    gridNode.getComponent(Cell).showEffect();
+    if (this.fighterMap.has(_formationType)) {
+      this.fighterMap.get(_formationType).push(fighter);
+    } else {
+      this.fighterMap.set(_formationType, [fighter]);
     }
   }
 

@@ -84,7 +84,7 @@ export class LevelManager {
   /** 根据当前阵容计算战力 */
   public calculatePower() {
     const currentFormation = PlayerData.getInstance().UserData.formation.filter(o => o.fighterId !== undefined);
-    LogManager.debug('currentFormation', currentFormation);
+
     const power = currentFormation.reduce((acc, curr) => {
       if (curr.fighterId === null) {
         return acc;

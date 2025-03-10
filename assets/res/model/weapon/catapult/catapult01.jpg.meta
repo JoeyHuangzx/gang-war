@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "a5d8e62e-1bef-4c41-b99d-1709aaf78c0f",
+  "uuid": "174c8841-6286-4cd7-bd34-7b59a2b7dbe9",
   "files": [
     ".jpg",
     ".json"
@@ -11,7 +11,7 @@
     "6c48a": {
       "ver": "1.0.22",
       "importer": "texture",
-      "uuid": "a5d8e62e-1bef-4c41-b99d-1709aaf78c0f@6c48a",
+      "uuid": "174c8841-6286-4cd7-bd34-7b59a2b7dbe9@6c48a",
       "imported": true,
       "files": [
         ".json"
@@ -26,7 +26,7 @@
         "premultiplyAlpha": false,
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "a5d8e62e-1bef-4c41-b99d-1709aaf78c0f",
+        "imageUuidOrDatabaseUri": "174c8841-6286-4cd7-bd34-7b59a2b7dbe9",
         "visible": false
       },
       "displayName": "catapult01",
@@ -36,7 +36,7 @@
   },
   "userData": {
     "type": "texture",
-    "redirect": "a5d8e62e-1bef-4c41-b99d-1709aaf78c0f@6c48a",
+    "redirect": "174c8841-6286-4cd7-bd34-7b59a2b7dbe9@6c48a",
     "hasAlpha": false,
     "fixAlphaTransparencyArtifacts": false
   }

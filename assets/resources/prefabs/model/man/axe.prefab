@@ -766,7 +766,10 @@
         "__expectedType__": "cc.AnimationClip"
       }
     ],
-    "_defaultClip": null,
+    "_defaultClip": {
+      "__uuid__": "f8c97c91-c3b1-4f51-a662-c91ba9e3abcd@1f586",
+      "__expectedType__": "cc.AnimationClip"
+    },
     "_useBakedAnimation": true,
     "_sockets": [
       {

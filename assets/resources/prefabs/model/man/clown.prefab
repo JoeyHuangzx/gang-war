@@ -32,10 +32,13 @@
     "_components": [
       {
         "__id__": 33
+      },
+      {
+        "__id__": 37
       }
     ],
     "_prefab": {
-      "__id__": 37
+      "__id__": 39
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -1026,6 +1029,27 @@
     "target": {
       "__id__": 29
     }
+  },
+  {
+    "__type__": "ff11aGDwidNxYiTSuWGucb9",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 38
+    },
+    "skeletalAnimation": {
+      "__id__": 33
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "a6+VLKahVErY7P0nz0UfHY"
   },
   {
     "__type__": "cc.PrefabInfo",

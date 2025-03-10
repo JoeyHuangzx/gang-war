@@ -19,9 +19,25 @@ export class Constants {
     FIGHTER: 'fighter',
   };
 
+  /*
+   * 1奥特曼/2牛角/3短剑/4标枪/5投石车/6小丑
+   */
   public static FIGHTER_MODEL = {
     AXE: 'axe',
     ALTMAN: 'altman',
+    CLOWN: 'clown',
+    CATAPULT: 'catapult',
+    JAVELIN: 'javelin',
+    SOLDIER: 'soldier',
+  };
+
+  public static FIGHTER_MODEL_TYPE_MAP = {
+    1: Constants.FIGHTER_MODEL.AXE,
+    2: this.FIGHTER_MODEL.ALTMAN,
+    3: this.FIGHTER_MODEL.SOLDIER,
+    4: this.FIGHTER_MODEL.JAVELIN,
+    5: this.FIGHTER_MODEL.CATAPULT,
+    6: this.FIGHTER_MODEL.CLOWN,
   };
 
   public static PREFAB_PATH = {
