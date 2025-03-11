@@ -12,6 +12,8 @@ import {
 } from 'cc';
 import { LogManager } from '../Core/LogManager';
 import { Constants } from '../Global/Constants';
+import { GameManager } from '../Core/GameManager';
+import { GameStatusEnum } from '../Global/GameStatusEnum';
 const { ccclass, property } = _decorator;
 
 // TODO ：模型升级合成
@@ -45,6 +47,7 @@ export class DragController3D extends Component {
    * 点击模型
    */
   startTouch(e: EventTouch) {
+    if (GameManager.getInstance().gameState !== GameStatusEnum.Start) return;
     LogManager.debug('startTouch');
     this.checkRay(e.getLocation());
     // 转为为屏幕坐标
@@ -54,6 +57,7 @@ export class DragController3D extends Component {
    * 拖动模型
    */
   moveTouch(e: EventTouch) {
+    if (GameManager.getInstance().gameState !== GameStatusEnum.Start) return;
     if (!this.target) {
       return;
     }
@@ -91,7 +95,7 @@ export class DragController3D extends Component {
         if (hitNode.layer === 1 << Constants.LAYER_ENUM.MODEL && !this.target) {
           this.target = hitNode;
           this.initPos = this.target.position.clone();
-        } else if (hitNode.layer === 1 << Constants.LAYER_ENUM.PLANE) {
+        } else if (hitNode.layer === 1 << Constants.LAYER_ENUM.PLANE && this.target) {
           LogManager.debug('move--');
           const newPos = hitPoint.clone();
           newPos.y = this.initPos.y;

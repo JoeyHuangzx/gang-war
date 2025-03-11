@@ -14,6 +14,7 @@ import { EventName } from '../Global/EventName';
 import { UIManager } from '../UI/UIManager';
 import { UIType } from '../UI/Enum/UIEnum';
 import { Camera } from '../Logic/Camera';
+import { GameStatusEnum } from '../Global/GameStatusEnum';
 
 export class GameManager {
   private static _instance: GameManager;
@@ -21,6 +22,7 @@ export class GameManager {
   public gridManager: GridManager;
   public gameNode: Node = null;
   public onlineInterval = null;
+  public gameState: GameStatusEnum = GameStatusEnum.Null;
 
   private constructor() {}
 
@@ -43,6 +45,7 @@ export class GameManager {
     } else {
       LogManager.error('未找到地图');
     }
+    this.gameState = GameStatusEnum.Start;
     EventManager.on(EventName.GAME_START, this.startGame, this);
     EventManager.on(EventName.GAME_RESET, this.resetGame, this);
     EventManager.on(EventName.GAME_INIT, this.resetGame, this);
@@ -69,6 +72,7 @@ export class GameManager {
   }
 
   startGame() {
+    this.gameState = GameStatusEnum.Running;
     const mgr = LevelManager.getInstance();
     UIManager.getInstance().showUI(UIType.FightUI, {
       selfPower: mgr.calculatePower(),
@@ -79,9 +83,8 @@ export class GameManager {
   }
 
   resetGame() {
+    this.gameState = GameStatusEnum.Start;
     Camera.instance.endGame();
-
-    // 开始游戏逻辑
   }
 
   pauseGame() {
@@ -89,6 +92,7 @@ export class GameManager {
   }
 
   endGame(data) {
+    this.gameState = GameStatusEnum.Ended;
     // 结束游戏逻辑
     UIManager.getInstance().hideUI(UIType.FightUI);
     UIManager.getInstance().showUI(UIType.SettleUI, data);
