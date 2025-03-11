@@ -1,22 +1,5 @@
-import {
-  _decorator,
-  CCClass,
-  CCInteger,
-  Component,
-  Enum,
-  instantiate,
-  Label,
-  math,
-  Node,
-  Prefab,
-  RichText,
-  Sprite,
-  tween,
-  Vec3,
-} from 'cc';
+import { _decorator, instantiate, Label, math, Node, Prefab, RichText, Sprite, tween, UITransform, Vec3 } from 'cc';
 import { BaseUI } from './BaseUI';
-import { UIManager } from '../UIManager';
-import { UIType } from '../Enum/UIEnum';
 import { PlayerData } from '../../Core/PlayerData';
 import { EventManager } from '../../Core/EventManager';
 import { EventName } from '../../Global/EventName';
@@ -26,6 +9,8 @@ import { UserData } from '../../Net/NetApi';
 import { LevelManager } from '../../Core/LevelManager';
 import { Constants } from '../../Global/Constants';
 import { ResourceManager } from '../../Core/ResourceManager';
+import { StartBottomButton } from '../Components/StartBottomButton';
+import { SpriteChange } from '../Common/SpriteChange';
 const { ccclass, property } = _decorator;
 
 /** GameUI 的数据结构 */
@@ -34,6 +19,9 @@ export interface GameUIData {
   level: number;
 }
 
+/**
+ * 开始界面UI
+ */
 @ccclass('GameUI')
 export class GameUI extends BaseUI<GameUIData> {
   // 金币数
@@ -50,12 +38,6 @@ export class GameUI extends BaseUI<GameUIData> {
   @property(Label)
   enemyPower: Label = null;
 
-  onlineReward: Label = null;
-
-  buyCharacter: Label = null;
-
-  buySlot: Label = null;
-
   // 关卡解锁tip
   @property(RichText)
   levelUnlockTip: RichText = null;
@@ -64,19 +46,18 @@ export class GameUI extends BaseUI<GameUIData> {
   @property(Node)
   startButton: Node = null;
 
-  rewardButton: Node = null;
-
-  buyCharacterButton: Node = null;
-
-  buySlotButton: Node = null;
-
   // 战力表指针
   @property(Node)
   pointer: Node = null;
 
+  @property(Node)
+  fightTip: Node = null;
+
+  private bottomButton: StartBottomButton = null;
+
   private minAngle: number = -60; // 最小角度
   private maxAngle: number = 60; // 最大角度
-  private duration: number = 0.5; // 单次摆动时间
+  private duration: number = 3; // 单次摆动时间
   private swingTween = null; // 缓存 Tween 以便控制
 
   playerData: PlayerData;
@@ -89,13 +70,8 @@ export class GameUI extends BaseUI<GameUIData> {
       .then((_prefab: Prefab) => {
         const _bottomNode = instantiate(_prefab);
         this.node.addChild(_bottomNode);
-        this.rewardButton = _bottomNode.getChildByName('onlineRewardButton');
-        this.buyCharacterButton = _bottomNode.getChildByName('buyCharacterButton');
-        this.buySlotButton = _bottomNode.getChildByName('buySlotButton');
-        this.onlineReward = this.rewardButton.getChildByName('item_count').getComponent(Label);
-        this.buyCharacter = this.buyCharacterButton.getChildByName('item_count').getComponent(Label);
-        this.buySlot = this.buySlotButton.getChildByName('item_count').getComponent(Label);
-        this.checkButtonVisible();
+        this.bottomButton = _bottomNode.getComponent(StartBottomButton);
+        this.bottomButton.checkButtonVisible();
         this.addListener();
       })
       .catch((error: Error) => {
@@ -103,23 +79,27 @@ export class GameUI extends BaseUI<GameUIData> {
       });
   }
 
-  protected start(): void {}
+  protected start(): void {
+    //开始按钮呼吸态
+    tween(this.startButton)
+      .to(0.7, { scale: new Vec3(1.2, 1.2, 1.2) })
+      .to(0.7, { scale: new Vec3(0.9, 0.9, 0.9) })
+      .union()
+      .repeatForever()
+      .start();
+  }
 
   addListener() {
     //侦听按钮事件
     this.startButton.on(Node.EventType.TOUCH_END, this.onStartButtonClick, this);
-    this.rewardButton.on(Node.EventType.TOUCH_END, this.onRewardButtonClick, this);
-    this.buyCharacterButton.on(Node.EventType.TOUCH_END, this.onBuyCharacterButtonClick, this);
-    this.buySlotButton.on(Node.EventType.TOUCH_END, this.onBuySlotButtonClick, this);
     EventManager.on(
       EventName.GOLD_UPDATE,
       () => {
+        this.bottomButton.checkButtonVisible();
         this.goldUpdateHandle();
-        this.checkButtonVisible();
       },
       this,
     );
-    EventManager.on(EventName.ONLINE_REWARD_UPDATE, this.onlineRewardUpdateHandle, this);
   }
 
   /** 初始化UI，可以传入数据 */
@@ -144,60 +124,33 @@ export class GameUI extends BaseUI<GameUIData> {
     this.goldCount.string = `${Math.floor(this.userData.gold)}`;
   }
 
-  public checkButtonVisible() {
-    const isFighterGray = this.userData.gold < this.playerData.getBuyFighterPrice();
-    const isCellGray = this.userData.gold < this.playerData.getBuyCellPrice();
-    this.buyCharacter.string = this.playerData.getBuyFighterPrice().toString();
-    this.buySlot.string = this.playerData.getBuyCellPrice().toString();
-    this.setSpriteGray(this.buyCharacterButton, isFighterGray);
-    this.setSpriteGray(this.buySlotButton, isCellGray);
-    this.onlineRewardUpdateHandle();
-    const _formation = this.userData.formation.find(o => o.fighterId === undefined);
-    if (!_formation) {
-      this.buyCharacter.string = '格子不足';
-      this.setSpriteGray(this.buyCharacterButton, true);
-    }
-  }
-
-  public onlineRewardUpdateHandle() {
-    this.onlineReward.string = `${Math.floor(this.playerData.getOnlineReward())}`;
-    this.setSpriteGray(this.rewardButton, this.playerData.getOnlineReward() < 2);
-  }
-
-  // sprite置灰
-  private setSpriteGray(spriteNode: Node, isGray: boolean) {
-    spriteNode.getComponentsInChildren(Sprite).forEach(_sprite => {
-      _sprite.grayscale = isGray;
-    });
-  }
-
   // 开始按钮点击事件
   onStartButtonClick() {
     LogManager.info('startButtonClick');
-
-    EventManager.emit(EventName.GAME_START);
-  }
-
-  // 领取奖励按钮点击事件
-  onRewardButtonClick() {
-    if (this.rewardButton.getComponentInChildren(Sprite).grayscale) return;
-    LogManager.info('rewardButtonClick');
-    this.playerData.updateGold(this.playerData.getOnlineReward());
-    this.playerData.reduceOnlineReward();
-  }
-
-  // 购买角色按钮点击事件
-  onBuyCharacterButtonClick() {
-    if (this.buyCharacterButton.getComponentInChildren(Sprite).grayscale) return;
-    LogManager.info('buyCharacterButtonClick');
-    this.playerData.buyFighter(this.dataMgr.nextUnlockCharacter().ID);
-  }
-
-  // 购买槽位按钮点击事件
-  onBuySlotButtonClick() {
-    if (this.buySlotButton.getComponentInChildren(Sprite).grayscale) return;
-    LogManager.info('buySlotButtonClick');
-    this.playerData.buyCell();
+    LogManager.debug(`角度：${this.pointer.eulerAngles.z}`);
+    const range = Math.abs(this.pointer.eulerAngles.z);
+    let spriteIndex = 0;
+    let _attackAddition = 1;
+    if (range < 65 && range >= 30) {
+      spriteIndex = 0;
+      _attackAddition = 1;
+    } else if (range < 30 && range >= 10) {
+      spriteIndex = 1;
+      _attackAddition = 1.2;
+    } else if (range < 10) {
+      spriteIndex = 2;
+      _attackAddition = 1.5;
+    }
+    this.fightTip.active = true;
+    this.fightTip.getComponent(SpriteChange).changeSprite(spriteIndex);
+    tween(this.fightTip)
+      .by(0.5, { position: new Vec3(0, 80, 0) })
+      .call(() => {
+        this.fightTip.position = Vec3.ZERO;
+        this.fightTip.active = false;
+        EventManager.emit(EventName.GAME_START, { attackAddition: _attackAddition });
+      })
+      .start();
   }
 
   update(deltaTime: number) {}
@@ -231,9 +184,6 @@ export class GameUI extends BaseUI<GameUIData> {
 
   private removeEvent() {
     this.startButton.off(Node.EventType.TOUCH_END, this.onStartButtonClick, this);
-    this.rewardButton.off(Node.EventType.TOUCH_END, this.onRewardButtonClick, this);
-    this.buyCharacterButton.off(Node.EventType.TOUCH_END, this.onBuyCharacterButtonClick, this);
-    this.buySlotButton.off(Node.EventType.TOUCH_END, this.onBuySlotButtonClick, this);
     EventManager.off(EventName.GOLD_UPDATE, this.goldUpdateHandle);
   }
 }

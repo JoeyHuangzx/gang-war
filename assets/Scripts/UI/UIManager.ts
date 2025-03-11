@@ -35,7 +35,7 @@ export class UIManager extends Component {
     }
 
     ui.init(data as T); // 初始化UI
-    ui.show();
+    ui.show(uiType);
     return ui;
   }
 

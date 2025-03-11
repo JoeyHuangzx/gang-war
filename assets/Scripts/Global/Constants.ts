@@ -52,6 +52,10 @@ export class Constants {
     ATTACK_EFFECT: 'prefabs/effect/attack01',
   } as const;
 
+  public static TEXTURE_PATH = {
+    FIGHTER_TEXTURE_PATH: 'texture/card/',
+  };
+
   public static STORAGE_KEY = {
     USER_DATA: 'userData',
     GAME_DATA: 'gameData',
@@ -60,5 +64,7 @@ export class Constants {
       SOUND: 'sound',
       MUSIC: 'music',
     },
+    /** 提示购买格子 */
+    SLOT_BUY_HAND_TIP: 'slot_buy_hand_tip',
   } as const;
 }

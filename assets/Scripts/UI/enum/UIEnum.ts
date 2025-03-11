@@ -7,4 +7,8 @@ export enum UIType {
   RankUI = 'RankUI',
   ToolUI = 'ToolUI',
   UnitUI = 'UnitUI',
+
+  // 以下是弹窗
+  BuyFighter = 'BuyFighter',
+  OnlineReward = 'OnlineReward',
 }

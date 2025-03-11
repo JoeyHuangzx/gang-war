@@ -7,6 +7,7 @@ import { EventManager } from './EventManager';
 import { LogManager } from './LogManager';
 import { FighterManager } from './FighterManager';
 import StorageManager from './StorageManager';
+import { LevelManager } from './LevelManager';
 
 // 玩家数据类
 export class PlayerData {
@@ -44,6 +45,10 @@ export class PlayerData {
   // 增加关卡
   public increaseLevel(): void {
     this._userData.currentLevel += 1;
+    const unlockId = LevelManager.getInstance().nextUnlockLevel();
+    if (unlockId) {
+      this._userData.unlockFighters.push(unlockId);
+    }
     this.savePlayerInfo();
   }
 
@@ -51,14 +56,13 @@ export class PlayerData {
   public buyFighter(fighterId: number): boolean {
     const _gold = this.getBuyFighterPrice();
     if (this._userData.gold >= _gold) {
-      // 假设购买一个角色需要 50 金币
-      this.updateGold(-_gold);
       this._userData.buyTimes += 1;
       const _formation = this._userData.formation.find(o => o.fighterId === undefined);
       _formation.fighterId = fighterId;
       LogManager.info(`${fighterId} 购买成功`);
       FighterManager.getInstance().addFighter(_formation, FighterTypeEnum.Self);
-      this.savePlayerInfo();
+      // 假设购买一个角色需要 50 金币
+      this.updateGold(-_gold);
       return true;
     } else {
       LogManager.info('金币不足，无法购买角色');
@@ -78,6 +82,21 @@ export class PlayerData {
     } else {
       return 30 + 10 * sep + Math.round(30 * Math.pow(factor, this._userData.buyTimes - sep));
     }
+  }
+
+  /**
+   * 士兵是否已购买
+   */
+  public hasFighterBeenPurchased(id: number): boolean {
+    return this._userData.formation.some(o => o.fighterId === id);
+  }
+
+  /**
+   * 未购买已解锁的士兵
+   * @returns
+   */
+  public queryNotPurchasedUnlocked(): number[] {
+    return this._userData.unlockFighters.filter(o => !this.hasFighterBeenPurchased(o));
   }
 
   /**

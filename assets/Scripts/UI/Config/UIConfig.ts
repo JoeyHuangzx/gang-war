@@ -8,4 +8,6 @@ export const UIConfig: Record<UIType, string> = {
   [UIType.RankUI]: 'prefabs/interface/RankUI',
   [UIType.ToolUI]: 'prefabs/interface/ToolUI',
   [UIType.UnitUI]: 'prefabs/interface/UnitUI',
+  [UIType.BuyFighter]: 'prefabs/interface/popup/buyFighter',
+  [UIType.OnlineReward]: 'prefabs/interface/popup/online',
 };

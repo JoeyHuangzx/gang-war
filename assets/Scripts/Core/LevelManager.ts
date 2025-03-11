@@ -73,6 +73,20 @@ export class LevelManager {
     return nextUnlockCharacter;
   }
 
+  /**
+   * 已经解锁的士兵
+   */
+  public getBuyFighter(): number {
+    let arr = PlayerData.getInstance().queryNotPurchasedUnlocked();
+    if (arr?.length > 0) {
+      LogManager.debug(`未购买：`, arr);
+      return arr[Math.floor(arr.length * Math.random())];
+    } else {
+      arr = PlayerData.getInstance().UserData.unlockFighters;
+      return arr[Math.floor(arr.length * Math.random())];
+    }
+  }
+
   public getFighterData(id: number): FighterData {
     return this.fighterMap.get(id);
   }

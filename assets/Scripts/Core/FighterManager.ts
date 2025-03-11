@@ -26,6 +26,7 @@ export class FighterManager {
   private _currGold = 0;
   private _selfPower = 0;
   private _enemyPower = 0;
+  attackAddition = 1;
 
   private constructor() {}
 
@@ -56,11 +57,12 @@ export class FighterManager {
 
   initFormation(_formation: Formation[], _formationType: FighterTypeEnum) {
     if (!this.gridManager.hasGrid(_formationType)) this.gridManager.generateGrids(_formation.length, _formationType);
+    // LogManager.debug(`formation:`, _formation);
     _formation.forEach(item => {
       if (item.fighterId) {
-        this.loadSoldier(item.id, LevelManager.getInstance().getFighterData(item.fighterId), _formationType);
+        this.loadSoldier(item, LevelManager.getInstance().getFighterData(item.fighterId), _formationType);
       } else {
-        this.loadSoldier(item.id, null, _formationType);
+        this.loadSoldier(item, null, _formationType);
       }
     });
   }
@@ -73,32 +75,35 @@ export class FighterManager {
   }
 
   public addFighter(formation: Formation, _formationType: FighterTypeEnum) {
-    this.loadSoldier(formation.id, LevelManager.getInstance().getFighterData(formation.fighterId), _formationType);
+    this.loadSoldier(formation, LevelManager.getInstance().getFighterData(formation.fighterId), _formationType);
   }
 
   // 加载士兵
-  public async loadSoldier(pos: number, fighterData: FighterData, _formationType: FighterTypeEnum) {
+  public async loadSoldier(formation: Formation, fighterData: FighterData, _formationType: FighterTypeEnum) {
     // 士兵底座
     const grids = _formationType === FighterTypeEnum.Self ? this.gridManager.gridMap : this.gridManager.enemyGridMap;
-    if (!grids.has(pos)) {
-      LogManager.error(`找不到格子:${pos},format:${_formationType}`);
+    if (!grids.has(formation.id)) {
+      LogManager.error(`找不到格子:${formation.id},format:${_formationType}`);
       return;
     }
-    const gridNode = grids.get(pos);
+    const gridNode = grids.get(formation.id);
     const baseNode = PoolManager.getInstance().get(Constants.PREFAB_NAME.FIGHTER); //instantiate(basePrefab);
     GameManager.getInstance().gameNode.addChild(baseNode);
     baseNode.setPosition(gridNode.position);
-    // const modelName = Constants.FIGHTER_MODEL_TYPE_MAP[fighterData.type];
-    const fighter = baseNode.getComponent(Fighter).initData(fighterData, _formationType, pos);
-    gridNode.getComponent(Cell).showEffect();
-    if (this.fighterMap.has(_formationType)) {
-      this.fighterMap.get(_formationType).push(fighter);
-    } else {
-      this.fighterMap.set(_formationType, [fighter]);
+    if (formation.fighterId) {
+      // const modelName = Constants.FIGHTER_MODEL_TYPE_MAP[fighterData.type];
+      const fighter = baseNode.getComponent(Fighter).initData(fighterData, _formationType, formation.id);
+      gridNode.getComponent(Cell).showEffect();
+      if (this.fighterMap.has(_formationType)) {
+        this.fighterMap.get(_formationType).push(fighter);
+      } else {
+        this.fighterMap.set(_formationType, [fighter]);
+      }
     }
   }
 
-  gameStart() {
+  gameStart(data: { attackAddition: number }) {
+    this.attackAddition = data.attackAddition;
     this.fighterMap.forEach(item => {
       item.forEach(fighter => {
         fighter.gameStart();

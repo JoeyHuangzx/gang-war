@@ -12,7 +12,8 @@ export type FighterPowerUpdateData = {
 };
 
 export interface IEventMap {
-  [EventName.GAME_START]: void;
+  /** 攻击加成 */
+  [EventName.GAME_START]: { attackAddition: number };
   [EventName.GAME_RESET]: void;
   [EventName.GAME_INIT]: void;
   [EventName.GAME_OVER]: SettleUIData; // 例如，失败或胜利

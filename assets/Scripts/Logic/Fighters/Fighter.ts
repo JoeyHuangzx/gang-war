@@ -64,7 +64,7 @@ export class Fighter extends Component {
     this.modelParent.addChild(model);
     model.setPosition(0, 0, 0);
 
-    this._damage = fighterData.attack;
+    this._damage = fighterData.attack * FighterManager.getInstance().attackAddition;
     this.fighterType = _formationType;
     if (this.fighterType === FighterTypeEnum.Enemy) {
       this.modelParent.setWorldRotation(Quaternion.GetQuatFromAngle(new Vec3(0, 270, 0)));
