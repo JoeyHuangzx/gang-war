@@ -19,6 +19,11 @@ export class Constants {
     FIGHTER: 'fighter',
   };
 
+  public static LAYER_ENUM = {
+    PLANE: 18,
+    MODEL: 19,
+  };
+
   /*
    * 1奥特曼/2牛角/3短剑/4标枪/5投石车/6小丑
    */

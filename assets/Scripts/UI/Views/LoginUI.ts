@@ -72,6 +72,7 @@ export class LoginUI extends BaseUI {
     const result = await HttpClient.getInstance().resetUser(PlayerData.getInstance().UserData.id);
     LogManager.debug('重置用户数据', result);
     if (result) {
+      PlayerData.getInstance().initData(result.data);
       StorageManager.getInstance().deleteData(Constants.STORAGE_KEY.USER_DATA);
       Toast.show('重置成功');
     } else {

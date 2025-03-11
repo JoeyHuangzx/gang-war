@@ -23,8 +23,35 @@ export class FighterModel extends Component {
   public skeletalAnimation: SkeletalAnimation = null;
   ticker = 0;
   findEnemyDt = 1;
+  startPosition: Vec3 = Vec3.ZERO;
 
   private _animationFinished: Function = null;
+
+  protected start(): void {
+    // this.node.on(Node.EventType.TOUCH_START, this.startTouch, this);
+    /* this.node.on(Node.EventType.TOUCH_MOVE, this.moveTouch, this);
+    this.node.on(Node.EventType.TOUCH_END, this.endTouch, this);
+    this.node.on(Node.EventType.TOUCH_CANCEL, this.endTouch, this); */
+  }
+
+  /**
+   * 点击模型
+   */
+  startTouch() {
+    LogManager.debug('startTouch');
+    this.startPosition = this.node.position;
+    // 转为为屏幕坐标
+  }
+
+  /**
+   * 拖动模型
+   */
+  moveTouch() {}
+
+  /**
+   * 松开模型
+   */
+  endTouch() {}
 
   onEnable() {
     this.skeletalAnimation.on(SkeletalAnimation.EventType.FINISHED, this.onAnimationFinished, this);
