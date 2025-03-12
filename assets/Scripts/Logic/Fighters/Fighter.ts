@@ -212,7 +212,7 @@ export class Fighter extends Component {
   }
 
   public recycle() {
-    LogManager.info('recycle:', this.node.name);
+    LogManager.debug('recycle:', this.node.name);
     EventManager.off(EventName.GAME_OVER, this.gameOver);
     PoolManager.getInstance().put(this.fighterModel.node.name, this.fighterModel.node);
     PoolManager.getInstance().put(Constants.PREFAB_NAME.FIGHTER, this.node);

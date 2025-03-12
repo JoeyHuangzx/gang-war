@@ -1,4 +1,4 @@
-import { _decorator, Canvas, Component, sys, view } from 'cc';
+import { _decorator, Component, Node, view } from 'cc';
 import { QuadEntity } from './QuadEntity';
 import { BoundingBox } from './BoundingBox';
 import { QuadTreeNode } from './QuadTreeNode';
@@ -11,7 +11,7 @@ const { ccclass, property } = _decorator;
  */
 @ccclass('QuadEntity')
 export class QuadTreeManager extends Component {
-  @property({ type: Node })
+  @property(Node)
   rootNode: Node = null;
 
   @property({ type: Array })

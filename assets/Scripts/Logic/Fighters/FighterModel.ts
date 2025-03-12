@@ -1,20 +1,6 @@
-import {
-  _decorator,
-  Animation,
-  AnimationClip,
-  Component,
-  input,
-  Input,
-  KeyCode,
-  Node,
-  SkeletalAnimation,
-  SkeletalAnimationState,
-  Vec3,
-} from 'cc';
+import { _decorator, Animation, AnimationClip, Component, SkeletalAnimation, SkeletalAnimationState, Vec3 } from 'cc';
 import { FighterAnimationEnum } from './FighterAnimationEnum';
 import { LogManager } from '../../Core/LogManager';
-import { FighterTypeEnum } from '../../Global/FighterTypeEnum';
-import { Quaternion } from '../../Common/Utils/Quaternion';
 const { ccclass, property } = _decorator;
 
 @ccclass('FighterModel')

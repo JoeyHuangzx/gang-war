@@ -81,7 +81,6 @@ export class FightUI extends BaseUI {
   }
 
   updateGold(data: { gold: number }) {
-    LogManager.info('更新金币:', data);
     this.goldCount.string = data.gold.toString();
   }
 

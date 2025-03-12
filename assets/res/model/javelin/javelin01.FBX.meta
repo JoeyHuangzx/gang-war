@@ -137,7 +137,7 @@
       "name": "died.animation",
       "userData": {
         "gltfIndex": 0,
-        "wrapMode": 2,
+        "wrapMode": 1,
         "sample": 30,
         "span": {
           "from": 2.8,
@@ -290,7 +290,7 @@
             "name": "died",
             "from": 2.8,
             "to": 4.125,
-            "wrapMode": 2,
+            "wrapMode": 1,
             "previousId": "5b2e9"
           }
         ]
