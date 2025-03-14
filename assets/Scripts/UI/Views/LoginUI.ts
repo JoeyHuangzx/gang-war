@@ -1,4 +1,4 @@
-import { _decorator, Component, director, EditBox, Node } from 'cc';
+import { _decorator, Component, director, EditBox, Node, profiler } from 'cc';
 import { GameManager } from '../../Core/GameManager';
 import { LogManager } from '../../Core/LogManager';
 import { PlayerData } from '../../Core/PlayerData';
@@ -36,6 +36,8 @@ export class LoginUI extends BaseUI {
       this.userName.string = data.name;
       PlayerData.getInstance().initData(data);
     }
+    LogManager.warn('draws:', profiler.stats);
+    LogManager.warn('draws:', profiler.stats.draws.counter.value);
   }
 
   update(deltaTime: number) {}

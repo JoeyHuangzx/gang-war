@@ -1,4 +1,17 @@
-import { _decorator, instantiate, Label, math, Node, Prefab, RichText, Sprite, tween, UITransform, Vec3 } from 'cc';
+import {
+  _decorator,
+  instantiate,
+  Label,
+  math,
+  Node,
+  Prefab,
+  profiler,
+  RichText,
+  Sprite,
+  tween,
+  UITransform,
+  Vec3,
+} from 'cc';
 import { BaseUI } from './BaseUI';
 import { PlayerData } from '../../Core/PlayerData';
 import { EventManager } from '../../Core/EventManager';
@@ -87,6 +100,8 @@ export class GameUI extends BaseUI<GameUIData> {
       .union()
       .repeatForever()
       .start();
+    LogManager.warn('draws:', profiler.stats);
+    LogManager.warn('draws:', profiler.stats.draws.counter.value);
   }
 
   addListener() {

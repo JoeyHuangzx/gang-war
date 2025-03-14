@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 
 @ccclass('QuadEntity')
 export class QuadEntity extends Component {
-  radius: number = 5;
+  radius: number = 0.5;
 
   bbox: BoundingBox = null;
 
@@ -18,10 +18,11 @@ export class QuadEntity extends Component {
 
   updateBoundingBox() {
     const pos = this.node.getPosition();
-    this.bbox.x = pos.x - this.radius;
-    this.bbox.y = pos.y - this.radius;
-    this.bbox.w = 2 * this.radius;
-    this.bbox.h = 2 * this.radius;
+    this.bbox.updateSize(pos.x - this.radius, pos.z - this.radius, 2 * this.radius, 2 * this.radius);
+    // this.bbox.x = pos.x - this.radius;
+    // this.bbox.y = pos.y - this.radius;
+    // this.bbox.w = 2 * this.radius;
+    // this.bbox.h = 2 * this.radius;
   }
 
   // 当位置改变时更新包围盒

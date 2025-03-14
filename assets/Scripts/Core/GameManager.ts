@@ -1,4 +1,4 @@
-import { find, Node, Prefab } from 'cc';
+import { director, find, game, Node, Prefab, profiler, renderer } from 'cc';
 import { GridManager } from '../Logic/Map/GridManager';
 import { FighterManager } from './FighterManager';
 import { PlayerData } from './PlayerData';

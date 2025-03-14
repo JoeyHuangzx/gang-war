@@ -1,3 +1,4 @@
+import { LogManager } from '../LogManager';
 import { BoundingBox } from './BoundingBox';
 import { QuadEntity } from './QuadEntity';
 
@@ -6,7 +7,7 @@ export class QuadTreeNode {
   bbox: BoundingBox;
   objects: Array<QuadEntity> = [];
   children: Array<QuadTreeNode> = [];
-  splitThreshold: number = 10;
+  splitThreshold: number = 4;
 
   constructor(bbox: BoundingBox) {
     this.bbox = bbox;
@@ -17,17 +18,18 @@ export class QuadTreeNode {
     if (!this.bbox.intersects(obj.bbox)) return false;
 
     this.objects.push(obj);
-
+    // console.log('length:' + this.objects.length);
     if (this.objects.length > this.splitThreshold) {
       this.split();
       // 重新分配所有对象到子节点
-      this.objects.forEach(obj => {
-        if (
-          this.children[0].insert(obj) ||
-          this.children[1].insert(obj) ||
-          this.children[2].insert(obj) ||
-          this.children[3].insert(obj)
-        ) {
+
+      this.objects.forEach((obj, index) => {
+        // console.log(`obj index:${index}`);
+        for (let i = 0; i < 4; i++) {
+          const _child = this.children[i];
+
+          _child.insert(obj);
+          // console.log(`第${i}个孩子节点：`, _child.objects.length);
         }
       });
       this.objects = [];
@@ -40,12 +42,12 @@ export class QuadTreeNode {
     const { x, y, w, h } = this.bbox;
     const halfW = w / 2;
     const halfH = h / 2;
-
+    LogManager.debug('split======');
     this.children = [
-      new QuadTreeNode(new BoundingBox(x, y, halfW, halfH)),
-      new QuadTreeNode(new BoundingBox(x + halfW, y, halfW, halfH)),
-      new QuadTreeNode(new BoundingBox(x, y + halfH, halfW, halfH)),
-      new QuadTreeNode(new BoundingBox(x + halfW, y + halfH, halfW, halfH)),
+      new QuadTreeNode(new BoundingBox(x, y, halfW, halfH, true)),
+      new QuadTreeNode(new BoundingBox(x + halfW, y, halfW, halfH, true)),
+      new QuadTreeNode(new BoundingBox(x, y + halfH, halfW, halfH, true)),
+      new QuadTreeNode(new BoundingBox(x + halfW, y + halfH, halfW, halfH, true)),
     ];
   }
 

@@ -8,6 +8,7 @@ import { LogManager } from './LogManager';
 import { FighterManager } from './FighterManager';
 import StorageManager from './StorageManager';
 import { LevelManager } from './LevelManager';
+import { profiler } from 'cc';
 
 // 玩家数据类
 export class PlayerData {
@@ -135,7 +136,7 @@ export class PlayerData {
     EventManager.emit(EventName.ONLINE_REWARD_UPDATE, { rewardAmount: this._userData.onlineReward });
     // 设置为1分钟保存一次
     if ((Date.now() - this.saveDate) / 1000 > 60) {
-      this.savePlayerInfo();
+      // this.savePlayerInfo();
     }
   }
 
