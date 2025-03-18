@@ -38,7 +38,7 @@ interface CacheEntry<T extends Asset> {
 export class ResourceManager {
   private static _instance: ResourceManager;
   private cache: Map<string, CacheEntry<Asset>> = new Map();
-  private loadingMap:Map<string,Promise<Asset>>=new Map();
+  private loadingMap: Map<string, Promise<Asset>> = new Map();
 
   public static getInstance(): ResourceManager {
     if (!this._instance) {
@@ -53,7 +53,6 @@ export class ResourceManager {
    * @param type 指定资源类型（仅远程资源有效）
    */
   public async load<T extends typeof Asset>(path: string, type?: T): Promise<InstanceType<T>> {
-    
     if (this.cache.has(path)) {
       const entry = this.cache.get(path)!;
       entry.refCount++;
@@ -61,15 +60,15 @@ export class ResourceManager {
     }
 
     // 是否已经有相同资源在加载
-    if(this.loadingMap.has(path)){
+    if (this.loadingMap.has(path)) {
       LogManager.warn(`Resource is loading: ${path}`);
-      const existPromise=this.loadingMap.get(path);
+      const existPromise = this.loadingMap.get(path);
       return existPromise as Promise<InstanceType<T>>;
     }
     Profiler.start('ResourceManager.load_' + path);
     try {
-      const loadPromise=(this.isRemotePath(path) ? this.loadRemote(path, type) : this.loadLocal(path));
-      this.loadingMap.set(path,loadPromise);
+      const loadPromise = this.isRemotePath(path) ? this.loadRemote(path, type) : this.loadLocal(path);
+      this.loadingMap.set(path, loadPromise);
       const asset = await loadPromise;
       this.loadingMap.delete(path);
       this.cache.set(path, { refCount: 1, asset });
